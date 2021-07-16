@@ -1,0 +1,24 @@
+"Anatomical Strucures, Cell Types and Biomarkers Table for lymph node v1.0",,,,,,,,
+,,,,,,,,
+Author Name(s):,,,,,,,,
+Author ORCID(s):,,,,,,,,
+Reviewer(s):,,,,,,,,
+General Publication(s):,,,,,,,,
+Data DOI:,,,,,,,,
+Date:,07/15/2021,,,,,,,
+Version Number:,v1.0,,,,,,,
+,,,,,,,,
+AS/1,AS/1/LABEL,AS/1/ID,AS/2,AS/2/LABEL,AS/2/ID,AS/3,AS/3/LABEL,AS/3/ID
+lymph node,lymph node,UBERON:0000029,subcapsular sinus of lymph node,subcapsular sinus of lymph node,UBERON:0005463,,,
+lymph node,lymph node,UBERON:0000029,hilum of lymph node,hilum of lymph node,UBERON:0035495,,,
+lymph node,lymph node,UBERON:0000029,afferent lymphatic vessel,afferent lymphatic vessel,UBERON:0010396,,,
+lymph node,lymph node,UBERON:0000029,cortex of lymph node,cortex of lymph node,UBERON:0002006,lymph node B cell domain,lymph node B cell domain,UBERON:0010416
+lymph node,lymph node,UBERON:0000029,,,,,,
+lymph node,lymph node,UBERON:0000029,cortex of lymph node,cortex of lymph node,UBERON:0002006,,,
+lymph node,lymph node,UBERON:0000029,cortex of lymph node,cortex of lymph node,UBERON:0002006,lymph node T cell domain,lymph node T cell domain,UBERON:0010417
+lymph node,lymph node,UBERON:0000029,medulla of lymph node,medulla of lymph node,UBERON:0002007,lymph node medullary cord,lymph node medullary cord,UBERON:0009745
+lymph node,lymph node,UBERON:0000029,medulla of lymph node,medulla of lymph node,UBERON:0002007,lymph node medullary sinus,lymph node medullary sinus,UBERON:0009744
+lymph node,lymph node,UBERON:0000029,cortex of lymph node,cortex of lymph node,UBERON:0002006,lymph node follicle,lymph node follicle,UBERON:0010748
+lymph node,lymph node,UBERON:0000029,trabecula of lymph node,trabecula of lymph node,UBERON:0002195,,,
+lymph node,lymph node,UBERON:0000029,medulla of lymph node,medulla of lymph node,UBERON:0002007,,,
+lymph node,lymph node,UBERON:0000029,lymph node endothelium,lymph node endothelium,UBERON:0004850,,,
