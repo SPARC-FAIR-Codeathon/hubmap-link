@@ -1,0 +1,10 @@
+<div fxLayout="column" fxLayoutAlign="start start">
+    <app-asctb-compare-sidebar class="full-width"></app-asctb-compare-sidebar>
+
+    
+    <div fxFlex>
+        <app-asctb-scatterplot-view *ngIf="asctbCompareService.selectedViewType=='graph'"></app-asctb-scatterplot-view>
+        <app-asctb-table-view *ngIf="asctbCompareService.selectedViewType=='table'"></app-asctb-table-view>
+        <app-asctb-tree-view *ngIf="asctbCompareService.selectedViewType=='tree'"></app-asctb-tree-view>
+    </div>
+</div>

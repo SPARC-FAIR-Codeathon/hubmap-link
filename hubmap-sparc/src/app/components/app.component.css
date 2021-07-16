@@ -1,0 +1,8 @@
+.sidebar{
+    width:350px;
+    max-width:25vw;
+    height:calc(100vh - 64px);
+    margin: 0;
+    border-right: 1px solid black;
+    background-color:#efefef;
+}

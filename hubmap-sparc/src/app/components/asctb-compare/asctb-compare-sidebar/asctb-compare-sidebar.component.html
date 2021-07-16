@@ -1,0 +1,18 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" class="bottom-gutter padding-sides-15" fxFlex>
+    <mat-form-field appearance="outline">
+        <mat-label>Organ</mat-label>
+        <mat-select [(ngModel)]="asctbCompareService.selectedOrganType" (ngModelChange)="asctbCompareService.loadOrganData()">
+            <mat-option *ngFor="let organ of asctbCompareService.organTypes" [value]="organ.id">{{organ.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-button-toggle-group [(ngModel)]="asctbCompareService.selectedViewType" aria-label="comparison view">
+        <mat-button-toggle value="table" matTooltip="List view"><mat-icon aria-hidden="false" aria-label="table">view_list</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="tree" matTooltip="Tree view"><mat-icon aria-hidden="false" aria-label="table">account_tree</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="graph" matTooltip="Graph view"><mat-icon aria-hidden="false" aria-label="table">scatter_plot</mat-icon></mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div></div>
+</div>
+
+
