@@ -17,7 +17,9 @@ export class AsctbCompareService {
   selectedViewType:string; // = 'table';
   //Organ type currently selected by the user
   selectedOrganType = 'UBERON:0000955';
-  //Selectable organ types in the UI control
+  //Human-readable data status string ['Not ready'|'Loading'|'Ready']
+  dataLoadStatus = 'Not ready';
+  //Selectable organ types in the UI control (@TODO: Externalize this to a resource file)
   organTypes = [
     {
       name:'Brain', 
@@ -51,6 +53,15 @@ export class AsctbCompareService {
   sparcRawOrganData = null;
   hubmapRawOrganData = null;
 
+  //Dataset summary statistics
+  countTotalAS:number = 0;
+  countSparcAS:number = 0;
+  countHubmapAS:number = 0;
+  countSharedAS:number = 0;
+  countSparcASLinks:number = 0;
+  countHubmapASLinks:number = 0;
+  countSharedASLinks:number = 0;
+
   /*************************************************************************************
    * Data tree structure representing organ data from both sparc and hubmap.
    *************************************************************************************/
@@ -78,6 +89,18 @@ export class AsctbCompareService {
     this.hubmapRawOrganData = null;
     this.mergedOrganData = null;
     this.mergedOrganIdx = {};
+    this.countTotalAS = 0;
+
+    this.countSparcAS = 0;
+    this.countHubmapAS = 0;
+    this.countSharedAS = 0;
+
+    this.countSparcASLinks = 0;
+    this.countHubmapASLinks = 0;
+    this.countSharedASLinks = 0;
+
+    //Update the data loading status
+    this.dataLoadStatus = 'Loading';
 
     //Fetch sparc data if a data uri is available
     if(selectedOrganObj.sparcUri){
@@ -118,7 +141,10 @@ export class AsctbCompareService {
     //Create a derivative data structure suitable for table presentation
     this.generateTableArr();
 
+    //Update the data loading status
+    this.dataLoadStatus = 'Ready';
 
+    //Render data to console for inspection
     console.log("mergedOrganData:");
     console.dir(this.mergedOrganData);
 
@@ -215,8 +241,19 @@ export class AsctbCompareService {
       //Calculate subtraction of sharedChildren from sparcChildren 
       mergedOrgan.asSparcChildren = new Set([...mergedOrgan.asSparcChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)))
 
+      //Update summary statistics
+      this.countSparcASLinks += mergedOrgan.asSparcChildren.size;
+      this.countHubmapASLinks += mergedOrgan.asHubmapChildren.size;
+      this.countSharedASLinks += mergedOrgan.asSharedChildren.size;
+
       //TODO: construct cell-type sets
     });
+
+    this.countTotalAS = Object.keys(this.mergedOrganIdx).length;
+    this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;
+    this.countHubmapAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => !organ.sparcResident && organ.hubmapResident).length;
+    this.countSharedAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && organ.hubmapResident).length;
+    
   }
 
   /*************************************************************************************

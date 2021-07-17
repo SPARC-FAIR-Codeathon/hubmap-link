@@ -21,8 +21,8 @@
         <ng-container matColumnDef="hubmap">
             <th class="header-font w-m75 center-text" mat-header-cell *matHeaderCellDef> HuBMAP </th>
             <td mat-cell *matCellDef="let organ" class="center-text"> 
-                <mat-icon class="color-green font-size-32" *ngIf="organ.hubmapResident">check</mat-icon>
-                <mat-icon class="color-maroon font-size-32" *ngIf="!organ.hubmapResident">close</mat-icon>
+                <mat-icon class="color-green font-size-32 pointer" *ngIf="organ.hubmapResident" matTooltip="This anatomical structure is present in HuBMAP">check</mat-icon>
+                <mat-icon class="color-maroon font-size-32 pointer" *ngIf="!organ.hubmapResident" matTooltip="This anatomical structure is not present in HuBMAP">close</mat-icon>
             </td>
         </ng-container>
 
@@ -32,8 +32,8 @@
                 <img width="50px" class="sparc-logo" src="assets/img/sparc-logo.svg"> 
             </th>
             <td mat-cell *matCellDef="let organ" class="center-text"> 
-                <mat-icon class="color-green font-size-32" *ngIf="organ.sparcResident">check</mat-icon>
-                <mat-icon class="color-maroon font-size-32" *ngIf="!organ.sparcResident">close</mat-icon>
+                <mat-icon class="color-green font-size-32 pointer" *ngIf="organ.sparcResident" matTooltip="This anatomical structure is present in SPARC">check</mat-icon>
+                <mat-icon class="color-maroon font-size-32 pointer" *ngIf="!organ.sparcResident" matTooltip="This anatomical structure is not present in SPARC">close</mat-icon>
             </td>
         </ng-container>
 

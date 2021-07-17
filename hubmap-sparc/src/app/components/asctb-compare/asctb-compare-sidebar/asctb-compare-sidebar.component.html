@@ -9,7 +9,7 @@
     <mat-selection-list 
         [(ngModel)]="asctbCompareService.selectedViewType" 
         [multiple]="false" 
-        class="full-width" fxFlex>
+        class="full-width">
 
 
         <mat-divider></mat-divider>
@@ -30,6 +30,56 @@
         </mat-list-option>
         <mat-divider></mat-divider>
     </mat-selection-list>
+
+    <!-- Statistics card -->
+    <mat-card class="sidebar-card" fxLayout="column" fxLayoutAlign="start start">
+        <table class="sidebar-table">
+            <thead><tr><th colspan="2">Organ statistics</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="border-bottom">Loading status:</td>
+                    <td class="border-bottom">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="bold" [class]="{'color-green': asctbCompareService.dataLoadStatus === 'Ready', 'color-maroon': asctbCompareService.dataLoadStatus !== 'Ready'}">
+                                {{asctbCompareService.dataLoadStatus}}
+                            </span>
+                            <span fxFlex></span>
+                            <mat-spinner diameter="15" *ngIf="asctbCompareService.dataLoadStatus === 'Loading'"></mat-spinner>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Anatomical structures:</td>
+                    <td>{{asctbCompareService.countTotalAS}}</td>
+                </tr>
+                <tr>
+                    <td>HuBMAP-only AS:</td>
+                    <td>{{asctbCompareService.countHubmapAS}}</td>
+                </tr>
+                <tr>
+                    <td>SPARC-only AS:</td>
+                    <td>{{asctbCompareService.countSparcAS}}</td>
+                </tr>
+                <tr>
+                    <td class="border-bottom">Shared AS:</td>
+                    <td class="border-bottom">{{asctbCompareService.countSharedAS}}</td>
+                </tr>
+                <tr>
+                    <td>HuBMAP-only AS links:</td>
+                    <td>{{asctbCompareService.countHubmapASLinks}}</td>
+                </tr>
+                <tr>
+                    <td>SPARC-only AS links:</td>
+                    <td>{{asctbCompareService.countSparcASLinks}}</td>
+                </tr>
+                <tr>
+                    <td>Shared AS links:</td>
+                    <td>{{asctbCompareService.countSharedASLinks}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </mat-card>
 </div>
 
 

@@ -3,10 +3,11 @@
 .w-m175{ min-width: 175px;}
 .w-m75{ min-width: 75px;}
 .background-blue{ background-color:darkslateblue; }
-.background-pink{ background-color:rgb(49, 61, 28); }
+.background-pink{ background-color:rgb(144, 158, 121); }
 .color-green{color:green;}
-.color-maroon{color:rgb(99, 2, 2);}
+.color-maroon{color:rgb(156, 3, 3);}
 .font-size-32{ font-size:32px;}
+.pointer{ cursor: pointer; }
 .header-font{ 
     font-size: 18px !important; 
     color: #fff;
