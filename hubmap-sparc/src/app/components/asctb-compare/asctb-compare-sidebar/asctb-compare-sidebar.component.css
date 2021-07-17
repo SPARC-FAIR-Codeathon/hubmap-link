@@ -1,9 +1,6 @@
-::ng-deep .mat-form-field-wrapper{
-    margin-bottom: -1.25em !important;
- }
+.full-width{width:100%;}
+.right-divider{border-right: 1px solid #505050;}
 
- .padding-sides-5{ padding: 0 5px 0 5px; }
-
- .bottom-gutter{
-    border-bottom: 1px solid rgba(255,255,255,.3);;
- }
+mat-list-option[aria-selected="true"] {
+    background: rgba(0, 139, 139, 0.7);
+}

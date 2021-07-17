@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="space-between center" class="bottom-gutter padding-sides-15" fxFlex>
+<div fxLayout="column" fxLayoutAlign="start center" class="sidebar" fxFlex>
     <mat-form-field appearance="outline">
         <mat-label>Organ</mat-label>
         <mat-select [(ngModel)]="asctbCompareService.selectedOrganType" (ngModelChange)="asctbCompareService.loadOrganData()">
@@ -6,13 +6,30 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-button-toggle-group [(ngModel)]="asctbCompareService.selectedViewType" aria-label="comparison view">
-        <mat-button-toggle value="table" matTooltip="List view"><mat-icon aria-hidden="false" aria-label="table">view_list</mat-icon></mat-button-toggle>
-        <mat-button-toggle value="tree" matTooltip="Tree view"><mat-icon aria-hidden="false" aria-label="table">account_tree</mat-icon></mat-button-toggle>
-        <mat-button-toggle value="graph" matTooltip="Graph view"><mat-icon aria-hidden="false" aria-label="table">scatter_plot</mat-icon></mat-button-toggle>
-    </mat-button-toggle-group>
+    <mat-selection-list 
+        [(ngModel)]="asctbCompareService.selectedViewType" 
+        [multiple]="false" 
+        class="full-width" fxFlex>
 
-    <div></div>
+
+        <mat-divider></mat-divider>
+        <mat-list-option value="table" class="md-accent">
+            <mat-icon matListIcon>view_list</mat-icon>
+            Table view
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option value="tree">
+            <mat-icon matListIcon>account_tree</mat-icon>
+            Tree view
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option value="graph">
+            <mat-icon matListIcon>scatter_plot</mat-icon>
+            Graph view
+            <!--<mat-icon matListIcon>chevron_right</mat-icon>-->
+        </mat-list-option>
+        <mat-divider></mat-divider>
+    </mat-selection-list>
 </div>
 
 

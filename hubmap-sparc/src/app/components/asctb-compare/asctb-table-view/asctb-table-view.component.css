@@ -1,0 +1,22 @@
+.full-width{ width: 100%; }
+.center-text{ text-align: center; }
+.w-m175{ min-width: 175px;}
+.w-m75{ min-width: 75px;}
+.background-blue{ background-color:darkslateblue; }
+.background-pink{ background-color:rgb(49, 61, 28); }
+.color-green{color:green;}
+.color-maroon{color:rgb(99, 2, 2);}
+.font-size-32{ font-size:32px;}
+.header-font{ 
+    font-size: 18px !important; 
+    color: #fff;
+}
+.header-font-small{ 
+    font-size: 12px !important; 
+    color: #fff;
+}
+.sparc-logo{
+    background-color:#fff; 
+    padding: 5px 5px 5px 5px; 
+    border-radius: 5px;
+}

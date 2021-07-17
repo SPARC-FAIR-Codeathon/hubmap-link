@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 
 @Component({
   selector: 'app-asctb-table-view',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AsctbTableViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(public asctbCompareService: AsctbCompareService) { }
+
+  public displayedColumns: string[] = ['id', 'name', 'label', 'hubmap', 'sparc', 'sharedCellTypes', 'hubmapCellTypes', 'sparcCellTypes'];
 
   ngOnInit(): void {
+  }
+
+  sortByColumn(columnName: string){
+    this.asctbCompareService.mergedTableArr.sort((a, b) => (a[columnName] > b[columnName]) ? 1 : ((b[columnName] > a[columnName]) ? -1 : 0));
   }
 
 }

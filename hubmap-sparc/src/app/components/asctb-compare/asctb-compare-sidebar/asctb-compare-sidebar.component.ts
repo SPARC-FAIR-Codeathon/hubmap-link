@@ -8,7 +8,9 @@ import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 })
 export class AsctbCompareSidebarComponent implements OnInit {
 
-  constructor(public asctbCompareService: AsctbCompareService) { }
+  constructor(public asctbCompareService: AsctbCompareService) {
+    
+  }
 
   ngOnInit(): void {
   }

@@ -2,3 +2,18 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #303030}
+
+
+.sidebar{
+    /* width:350px;
+    max-width:25vw;*/
+    height:calc(100vh - 64px);
+    margin: 0;
+    border-right: 1px solid black;
+    background-color:#404040;
+}
+
+.fixed-stage-height{
+    height:calc(100vh - 64px);
+    overflow-y: auto;
+}
