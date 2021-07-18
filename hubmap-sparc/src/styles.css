@@ -17,3 +17,25 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     height:calc(100vh - 64px);
     overflow-y: auto;
 }
+
+
+/* svg */
+.node circle {
+    fill: #fff;
+    stroke: rgba(0, 139, 139, 0.7);
+    stroke-width: 3px;
+}
+.node-blue{ fill:darkslateblue; }
+.node-olive{ background-color:rgb(144, 158, 121); }
+  
+.node text {
+    font: 12px sans-serif;
+}
+  
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+.link.blue{ stroke:darkslateblue !important; }
+.link.olive{ stroke:rgb(144, 158, 121) !important; }

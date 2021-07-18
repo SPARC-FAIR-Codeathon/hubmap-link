@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Organ } from 'src/app/interfaces/organ';
 import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 
 @Component({
@@ -13,6 +14,9 @@ export class AsctbCompareSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //Execute initial load after render
+    this.asctbCompareService.loadOrganData();
   }
+
 
 }

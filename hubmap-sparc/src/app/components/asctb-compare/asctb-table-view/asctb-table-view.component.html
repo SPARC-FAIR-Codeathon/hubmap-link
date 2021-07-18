@@ -1,8 +1,8 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="fixed-stage-height" fxFlex>
     <table mat-table [dataSource]="asctbCompareService.mergedTableArr" fxFlex> <!-- *ngIf="asctbCompareService.mergedTableArr.length > 0"-->
         <ng-container matColumnDef="id">
-            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> <a (click)="sortByColumn('id')">ID</a> </th>
-            <td mat-cell *matCellDef="let organ"> {{organ.id}} </td>
+            <th class="header-font w-m175" mat-header-cell *matHeaderCellDef> <a (click)="sortByColumn('id')">ID</a> </th>
+            <td mat-cell *matCellDef="let organ"> {{getOrganIdReadable(organ.id)}} </td>
         </ng-container>
 
         <!-- Name Column -->
@@ -19,7 +19,9 @@
 
         <!-- HuBMAP Column -->
         <ng-container matColumnDef="hubmap">
-            <th class="header-font w-m75 center-text" mat-header-cell *matHeaderCellDef> HuBMAP </th>
+            <th class="header-font w-m75 center-text" mat-header-cell *matHeaderCellDef>
+                <img width="50px" class="hubmap-logo" src="assets/img/hubmap-logo.svg"> 
+            </th>
             <td mat-cell *matCellDef="let organ" class="center-text"> 
                 <mat-icon class="color-green font-size-32 pointer" *ngIf="organ.hubmapResident" matTooltip="This anatomical structure is present in HuBMAP">check</mat-icon>
                 <mat-icon class="color-maroon font-size-32 pointer" *ngIf="!organ.hubmapResident" matTooltip="This anatomical structure is not present in HuBMAP">close</mat-icon>

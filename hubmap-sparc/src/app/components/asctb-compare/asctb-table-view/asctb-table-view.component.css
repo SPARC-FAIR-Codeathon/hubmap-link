@@ -2,7 +2,7 @@
 .center-text{ text-align: center; }
 .w-m175{ min-width: 175px;}
 .w-m75{ min-width: 75px;}
-.background-blue{ background-color:darkslateblue; }
+.background-blue{ background-color:rgb(69, 59, 134); }
 .background-pink{ background-color:rgb(144, 158, 121); }
 .color-green{color:green;}
 .color-maroon{color:rgb(156, 3, 3);}
@@ -19,5 +19,10 @@
 .sparc-logo{
     background-color:#fff; 
     padding: 5px 5px 5px 5px; 
+    border-radius: 5px;
+}
+.hubmap-logo{
+    background-color:#000; 
+    padding: 12px 5px 12px 5px; 
     border-radius: 5px;
 }

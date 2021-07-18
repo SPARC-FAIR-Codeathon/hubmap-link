@@ -13,19 +13,25 @@
 
 
         <mat-divider></mat-divider>
-        <mat-list-option value="table" class="md-accent">
+        <mat-list-option [value]="'table'" selected>
             <mat-icon matListIcon>view_list</mat-icon>
             Table view
         </mat-list-option>
         <mat-divider></mat-divider>
-        <mat-list-option value="tree">
+        <mat-list-option [value]="'tree'">
             <mat-icon matListIcon>account_tree</mat-icon>
             Tree view
         </mat-list-option>
         <mat-divider></mat-divider>
-        <mat-list-option value="graph">
+        <mat-list-option [value]="'graph'">
             <mat-icon matListIcon>scatter_plot</mat-icon>
             Graph view
+            <!--<mat-icon matListIcon>chevron_right</mat-icon>-->
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option [value]="'treemap'">
+            <mat-icon matListIcon>timeline</mat-icon>
+            Treemap view
             <!--<mat-icon matListIcon>chevron_right</mat-icon>-->
         </mat-list-option>
         <mat-divider></mat-divider>
@@ -37,7 +43,7 @@
             <thead><tr><th colspan="2">Organ statistics</th></tr></thead>
             <tbody>
                 <tr>
-                    <td class="border-bottom">Loading status:</td>
+                    <td class="border-bottom">Data status:</td>
                     <td class="border-bottom">
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="bold" [class]="{'color-green': asctbCompareService.dataLoadStatus === 'Ready', 'color-maroon': asctbCompareService.dataLoadStatus !== 'Ready'}">

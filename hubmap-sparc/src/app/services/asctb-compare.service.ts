@@ -247,7 +247,9 @@ export class AsctbCompareService {
       this.countSharedASLinks += mergedOrgan.asSharedChildren.size;
 
       //TODO: construct cell-type sets
+      //console.dir(mergedOrgan.asSparcChildren);
     });
+    //console.dir(this.countSparcASLinks)
 
     this.countTotalAS = Object.keys(this.mergedOrganIdx).length;
     this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;

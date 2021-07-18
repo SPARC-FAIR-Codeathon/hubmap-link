@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 
+/* Directives */
+
+//import { VegaliteDirective } from './directives/vegalite.directive';
 
 /* Material components */
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -46,6 +49,7 @@ import { AsctbCompareSidebarComponent } from './components/asctb-compare/asctb-c
 import { AsctbTableViewComponent } from './components/asctb-compare/asctb-table-view/asctb-table-view.component';
 import { AsctbTreeViewComponent } from './components/asctb-compare/asctb-tree-view/asctb-tree-view.component';
 import { AsctbScatterplotViewComponent } from './components/asctb-compare/asctb-scatterplot-view/asctb-scatterplot-view.component';
+import { AsctbTreemapViewComponent } from './components/asctb-compare/asctb-treemap-view/asctb-treemap-view.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +59,8 @@ import { AsctbScatterplotViewComponent } from './components/asctb-compare/asctb-
     AsctbCompareSidebarComponent,
     AsctbTableViewComponent,
     AsctbTreeViewComponent,
-    AsctbScatterplotViewComponent
+    AsctbScatterplotViewComponent,
+    AsctbTreemapViewComponent
   ],
   imports: [
     BrowserModule,

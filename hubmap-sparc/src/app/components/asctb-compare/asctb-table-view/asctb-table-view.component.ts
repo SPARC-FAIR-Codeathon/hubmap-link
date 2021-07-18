@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Organ } from 'src/app/interfaces/organ';
 import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 
 @Component({
@@ -17,6 +18,10 @@ export class AsctbTableViewComponent implements OnInit {
 
   sortByColumn(columnName: string){
     this.asctbCompareService.mergedTableArr.sort((a, b) => (a[columnName] > b[columnName]) ? 1 : ((b[columnName] > a[columnName]) ? -1 : 0));
+  }
+  
+  getOrganIdReadable(id:string): string{
+    return (id.indexOf('SURROGATE_ID') > -1)? '<NONE>': id;
   }
 
 }
