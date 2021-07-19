@@ -42,9 +42,6 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
         width = wWidth - margin.left - margin.right,
         height = wHeight - margin.top - margin.bottom;
 
-    // append the svg object to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
     d3.selectAll("#treemap-div > *").remove();
     var svg = d3.select("#treemap-div").append("svg")
         .attr("width", width + margin.right + margin.left)
@@ -61,31 +58,15 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
     var treemap = d3.tree().size([height, width]);
 
     // Assigns parent, children, height, depth
-    root = d3.hierarchy(this.asTree, function(d) { 
-      return new Set([...d.asHubmapChildren, ...d.asSparcChildren, ...d.asSharedChildren]) //d.asHubmapChildren; 
+    root = d3.hierarchy(this.asTree, function(d) {
+      return d.asAcyclicalChildren;
+      //return new Set([...d.asHubmapChildren, ...d.asSparcChildren, ...d.asSharedChildren]);
     });
 
-    console.log('root');
-    console.dir(root);
-
-    //TODO: recursive walk root and build an index on data.id: [node, ...]
-    //Filter index to those that have multiple nodes
-    //For each index with multiple nodes, find the one with greatest depth to keep
-    //Then for all others, traverse to parent, remove it from children, add the keeper to children, 
-    
     root.x0 = height / 2;
     root.y0 = 0;
 
     update(root);
-
-    // Collapse the node and all it's children
-/*    function collapse(d) {
-      if(d.children) {
-        d._children = d.children
-        d._children.forEach(collapse)
-        d.children = null
-      }
-    } */
 
     function update(source) {
 
@@ -118,16 +99,20 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
       // Sparc = olive
       let nodeFillColor = (node) =>{
         if(node.data.sparcResident && node.data.hubmapResident) { return "#fff"; }
-        else if(!node.data.sparcResident && node.data.hubmapResident) { return "rgb(69, 59, 134)"; }
-        else { return "rgb(144, 158, 121)"; }
+        else if(!node.data.sparcResident && node.data.hubmapResident) { return "rgb(144, 158, 121)"; }
+        else { return "rgb(69, 59, 134)"; }
       }
 
       // Add Circle for the nodes
       nodeEnter.append('circle')
-          .attr('class', 'node')
+          .attr('class', (d)=>{
+            let classStr = 'node';
+              if(!d.data.sparcResident && d.data.hubmapResident) { classStr += " hubmap"; }
+              else if(d.data.sparcResident && !d.data.hubmapResident) { classStr += " sparc"; }
+            return classStr;
+          })
           .attr('r', 1e-6)
           .style("fill", function(d) {
-            
             return nodeFillColor(d);
           });
 
@@ -179,22 +164,61 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
 
       // ****************** links section ***************************
 
+      console.log('links');
+      console.dir(links);
+
+      var expandedLinks = [];
+      links.forEach(node => {
+        if(node.data.asParents.length > 1){ console.log('look for: ' + node.data.name);}
+        node.data.asParents.forEach(parent => {
+          let nextNode = Object.assign({}, node);
+          nextNode.parent = parent;
+          expandedLinks.push(node);
+        });
+      });
+
+      console.log("expandedLinks");
+      console.dir(expandedLinks);
+
+
       // Update the links...
       var link = svg.selectAll('path.link')
-          .data(links, function(d) { return d.id; });
+          .data(expandedLinks, function(d) { return d.id; });
 
-      // Enter any new links at the parent's previous position.
+
       var linkEnter = link.enter().insert('path', "g")
-          .attr("class", function(d){
-            let classesStr = "link";
-            if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " olive" }
-            if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " blue" }
-            return classesStr;
-          })
-          .attr('d', function(d){
-            var o = {x: source.x0, y: source.y0}
-            return diagonal(o, o)
-          });
+        .attr("class", function(d){
+          let classesStr = "link";
+          if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
+          if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
+          return classesStr;
+        })
+        .attr('d', function(d){
+          var o = {x: source.x0, y: source.y0}
+          return diagonal(o, o)
+        });
+
+
+      // Update the links...
+      /*
+      var link = svg.selectAll('path.link')
+        .data(links, function(d) { return d.id; });
+
+      var linkEnter = link.enter().insert('path', "g")
+        .attr("class", function(d){
+          let classesStr = "link";
+          if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
+          if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
+          return classesStr;
+        })
+        .attr('d', function(d){
+          var o = {x: source.x0, y: source.y0}
+          return diagonal(o, o)
+        });
+      */
+
+
+
 
       // UPDATE
       var linkUpdate = linkEnter.merge(link);

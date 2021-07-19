@@ -3,10 +3,9 @@
 
     
     <div fxFlex>
-        <app-asctb-scatterplot-view *ngIf="asctbCompareService.selectedViewType=='graph'"></app-asctb-scatterplot-view>
+        <app-asctb-scatterplot-view *ngIf="asctbCompareService.selectedViewType=='graph'" [fdNodes]="asctbCompareService.fdNodes" [fdEdges]="asctbCompareService.fdEdges"></app-asctb-scatterplot-view>
         <app-asctb-table-view *ngIf="asctbCompareService.selectedViewType=='table'"></app-asctb-table-view>
-        <app-asctb-tree-view *ngIf="asctbCompareService.selectedViewType=='tree'"></app-asctb-tree-view>
+        <app-asctb-tree-view *ngIf="asctbCompareService.selectedViewType=='tree'" [asTree]='asctbCompareService.mergedOrganData'></app-asctb-tree-view>
         <app-asctb-treemap-view *ngIf="asctbCompareService.selectedViewType=='treemap'" [asTree]='asctbCompareService.mergedOrganData'></app-asctb-treemap-view>
-        
     </div>
 </div>

@@ -11,7 +11,7 @@ export class AsctbTableViewComponent implements OnInit {
 
   constructor(public asctbCompareService: AsctbCompareService) { }
 
-  public displayedColumns: string[] = ['id', 'name', 'label', 'hubmap', 'sparc', 'sharedCellTypes', 'hubmapCellTypes', 'sparcCellTypes'];
+  public displayedColumns: string[] = ['id', 'name', 'label', 'hubmap', 'sparc', 'cellTypes']; //'sharedCellTypes', 'hubmapCellTypes', 'sparcCellTypes'
 
   ngOnInit(): void {
   }

@@ -1,0 +1,6 @@
+.background-white{background:#fff;}
+
+.graph-height{
+    height:calc(100vh - 70px);
+    overflow-y: hidden;
+}

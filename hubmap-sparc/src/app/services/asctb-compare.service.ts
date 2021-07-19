@@ -24,27 +24,27 @@ export class AsctbCompareService {
     {
       name:'Brain', 
       id:'UBERON:0000955', 
-      sparcUri:'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_brain.json',
+      sparcUri: 'assets/data/sparc_brain.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_brain.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
     },{
       name:'Heart', 
       id:'UBERON:0000948', 
-      sparcUri:'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_heart.json',
+      sparcUri:'assets/data/sparc_heart.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_heart.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1240281363'
     },{
       name:'Kidney', 
       id:'UBERON:0002113', 
-      sparcUri:'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_kidney.json',
+      sparcUri:'assets/data/sparc_kidney.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_kidney.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1760639962'
     },{
       name:'Large intestine', 
       id:'UBERON:0000059', 
-      sparcUri:'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_large-intestine.json',
+      sparcUri:'assets/data/sparc_large-intestine.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_large-intestine.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1687995716'
     },{
       name:'Lymph nodes', 
       id:'UBERON:0000029', 
-      sparcUri:'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_lymph-nodes.json',
+      sparcUri:'assets/data/sparc_lymph-nodes.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_lymph-nodes.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/272157091'
     }
   ];
@@ -72,6 +72,12 @@ export class AsctbCompareService {
    * Data structure suitable for table presentation
    *************************************************************************************/
   mergedTableArr = [];
+
+  /*************************************************************************************
+   * Data structure for D3 force-directed graph presentation
+   *************************************************************************************/
+  fdNodes = []; // {id: "UBERON:00012345", group: 1, organ:{...}}
+  fdEdges = []; // {source: "UBERON:00012345", target: "UBERON:00012346", value: 1}
 
   constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService) {}
 
@@ -140,6 +146,9 @@ export class AsctbCompareService {
 
     //Create a derivative data structure suitable for table presentation
     this.generateTableArr();
+
+    //Create node and edge datastructures for a force directed view
+    this.generateForcedDirectedDatasets();
 
     //Update the data loading status
     this.dataLoadStatus = 'Ready';
@@ -230,10 +239,15 @@ export class AsctbCompareService {
           }
         }
       });
-      //At this point, asHubmapChildren and asSparcChildren are now populated with the respective children of the two datasets
-      //However, we need to populate asSharedChildren with the intersection of these two sets, and subtract shared children 
-      //from each of the source-specific sets
       
+      /*************************************************************************************
+      * Step 3:At this point, asHubmapChildren and asSparcChildren are now populated with 
+      * the respective children of the two datasets. However, we need to populate 
+      * asSharedChildren with the intersection of these two sets, and subtract shared 
+      * children from each of the source-specific sets.
+      **************************************************************************************/
+
+      mergedOrgan.asAllChildren = new Set([...mergedOrgan.asHubmapChildren, ...mergedOrgan.asSparcChildren]);
       //Calculate intersection of the two sets and assign to sharedChildren
       mergedOrgan.asSharedChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => mergedOrgan.asSparcChildren.has(x)))
       //Calculate subtraction of sharedChildren from hubmapChildren 
@@ -249,6 +263,13 @@ export class AsctbCompareService {
       //TODO: construct cell-type sets
       //console.dir(mergedOrgan.asSparcChildren);
     });
+
+    /*************************************************************************************
+     * Step 4: Walk the merged organ tree and populate maxDepth, parents, 
+     * asAcyclicalChildren
+     *************************************************************************************/
+    this.augmentMergedOrganNode(this.mergedOrganData, null, new Set<Organ>());
+    
     //console.dir(this.countSparcASLinks)
 
     this.countTotalAS = Object.keys(this.mergedOrganIdx).length;
@@ -285,6 +306,20 @@ export class AsctbCompareService {
   }
 
   /*************************************************************************************
+   * Structure merged index data to force directed graph arrays for UI presentation
+   *************************************************************************************/
+   private generateForcedDirectedDatasets(){
+    this.fdNodes = []; // {id: "UBERON:00012345", group: 1, organ:{...}}
+    this.fdEdges = []; // {source: "UBERON:00012345", target: "UBERON:00012346", value: 1}
+    Object.values(this.mergedOrganIdx).forEach((organ:Organ)=>{
+      this.fdNodes.push({id:organ.id, group:((organ.sparcResident && organ.hubmapResident)?1: (!organ.sparcResident && organ.hubmapResident)?2: 3), organ:organ});
+      organ.asAllChildren.forEach((childOrgan)=>{
+        this.fdEdges.push({source:childOrgan.id, target:organ.id, value:1});
+      });
+    });
+  }
+
+  /*************************************************************************************
    * Depth-first walk of sparc organ tree datastructure to construct an id:organ index
    *************************************************************************************/
   private indexSparcOrganTree(idx, node){
@@ -297,6 +332,39 @@ export class AsctbCompareService {
   }
 
   /*************************************************************************************
+   * Depth-first walk of merged organ tree to populate maxDepth, asParents, and
+   * asAcyclicalChildren
+   *************************************************************************************/
+  private augmentMergedOrganNode(node: Organ, parent: Organ, visitedSet: Set<Organ>){
+    visitedSet.add(node); //Add this node to the visited set so that we do not revisit
+    if(parent){
+      node.asParents.add(parent);
+      //Find parent with maximum depth. Add as child of that parent. Remove from children of other parents
+      let deepestParent = Array.from(node.asParents).reduce(function(prev, current) {
+          return (prev.maxDepth > current.maxDepth) ? prev : current
+      });
+      //Only deepest parent may claim this node as its child
+      deepestParent.asAcyclicalChildren.add(node);
+      node.asParents.forEach((parent)=>{
+        if(parent !== deepestParent){
+          parent.asAcyclicalChildren.delete(node);
+        }
+      });
+      node.maxDepth = deepestParent.maxDepth+1;
+    } else { //Root node gets depth 0
+      node.maxDepth = 0;
+    }
+    //Iterate on next node
+    node.asAllChildren.forEach((child)=>{
+      if(!visitedSet.has(child)){
+        this.augmentMergedOrganNode(child, node, visitedSet);
+      }
+    });
+  }
+
+
+
+  /*************************************************************************************
    * Utility function to create an object conforming to the Organ interface
    *************************************************************************************/
    private initializeMergedOrgan(id:string, name:string, label:string, sparcResident:boolean, hubmapResident:boolean): Organ{
@@ -304,9 +372,13 @@ export class AsctbCompareService {
       id: id,
       name: name,
       label: label,
+      maxDepth: -1,
       sparcResident: sparcResident,
       hubmapResident: hubmapResident,
       //Initialize, but do not assign the children sets yet
+      asParents: new Set(),
+      asAcyclicalChildren: new Set(),
+      asAllChildren: new Set(),
       asSparcChildren: new Set(),
       asHubmapChildren: new Set(),
       asSharedChildren: new Set(),

@@ -39,35 +39,32 @@
             </td>
         </ng-container>
 
+
         <!-- sharedCellTypes Column -->
-        <ng-container matColumnDef="sharedCellTypes">
-            <th class="header-font w-m175 center-text" mat-header-cell *matHeaderCellDef> Shared CT </th>
+        <ng-container matColumnDef="cellTypes">
+            <th class="header-font w-m275 center-text" mat-header-cell *matHeaderCellDef> Cell Types </th>
             <td mat-cell *matCellDef="let organ"> {{organ.sharedCellTypes}} </td>
         </ng-container>
 
+        <!-- sharedCellTypes Column -->
+        <!-- <ng-container matColumnDef="sharedCellTypes">
+            <th class="header-font w-m175 center-text" mat-header-cell *matHeaderCellDef> Shared CT </th>
+            <td mat-cell *matCellDef="let organ"> {{organ.sharedCellTypes}} </td>
+        </ng-container> -->
+
         <!-- sparcCellTypes Column -->
-        <ng-container matColumnDef="sparcCellTypes">
+        <!-- <ng-container matColumnDef="sparcCellTypes">
             <th class="header-font w-m175 center-text" mat-header-cell *matHeaderCellDef> SPARC CT </th>
             <td mat-cell *matCellDef="let organ"> {{organ.sparcCellTypes}} </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- hubmapCellTypes Column -->
-        <ng-container matColumnDef="hubmapCellTypes">
+        <!-- <ng-container matColumnDef="hubmapCellTypes">
             <th class="header-font w-m175 center-text" mat-header-cell *matHeaderCellDef> HuBMAP CT </th>
             <td mat-cell *matCellDef="let organ"> {{organ.hubmapCellTypes}} </td>
-        </ng-container>
+        </ng-container> -->
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row [ngClass]="{'background-pink' : row.sparcResident && !row.hubmapResident, 'background-blue' : !row.sparcResident && row.hubmapResident}" *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row [ngClass]="{'background-sparc' : row.sparcResident && !row.hubmapResident, 'background-hubmap' : !row.sparcResident && row.hubmapResident}" *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>
-<!--
-    id: organ.id,
-    name: organ.name,
-    label: organ.label,
-    sharedCellTypes: null,
-    hubmapCellTypes: null,
-    sparcCellTypes: null,
-    sparcResident: organ.sparcResident,
-    hubmapResident: organ.hubmapResident
--->

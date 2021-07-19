@@ -1,9 +1,10 @@
 .full-width{ width: 100%; }
 .center-text{ text-align: center; }
+.w-m275{ min-width: 275px;}
 .w-m175{ min-width: 175px;}
 .w-m75{ min-width: 75px;}
-.background-blue{ background-color:rgb(69, 59, 134); }
-.background-pink{ background-color:rgb(144, 158, 121); }
+.background-sparc{ background-color:rgb(69, 59, 134); }
+.background-hubmap{ background-color:rgb(144, 158, 121); }
 .color-green{color:green;}
 .color-maroon{color:rgb(156, 3, 3);}
 .font-size-32{ font-size:32px;}

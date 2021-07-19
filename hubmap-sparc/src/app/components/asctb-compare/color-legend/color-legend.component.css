@@ -1,0 +1,32 @@
+.big-text{ font-size: 18px; }
+.margin-left-5{ margin-left: 5px; }
+.margin-left-15{ margin-left: 15px; }
+.margin-top-5{ margin-top:5px; }
+.bold{font-weight:bold;}
+.full-width{width:100%;}
+
+.color-box{
+    width:20px;
+    height:20px;
+}
+
+.shared-box{ 
+    width:14px;
+    height:14px;
+    background-color: #ccc; 
+    border: 3px solid steelblue;
+}
+.sparc-box{ background-color: darkslateblue; }
+.hubmap-box{ background-color: rgb(144, 158, 121); }
+
+
+.sparc-logo{
+    background-color:#fff; 
+    padding: 5px 5px 5px 5px; 
+    border-radius: 5px;
+}
+.hubmap-logo{
+    background-color:#000; 
+    padding: 12px 5px 12px 5px; 
+    border-radius: 5px;
+}

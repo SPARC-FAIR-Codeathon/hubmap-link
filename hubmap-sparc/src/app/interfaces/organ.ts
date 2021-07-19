@@ -3,10 +3,21 @@ export interface Organ {
     name:string;
     label:string;
 
+    //The maximum depth at which this node appears (excluding cyclical references)
+    maxDepth:number;
+
     //True if this organ is present in the sparc tree
     sparcResident:boolean;
     //True if this organ is present in the hubmap tree
     hubmapResident:boolean;
+
+    //All organs with a parent relationship on this organ
+    asParents: Set<Organ>;
+
+    //All child organs, including duplicate parent-child relationships
+    asAllChildren: Set<Organ>;
+    //Acyclical child organs; each organ appears as a child of one parent with the greatest max depth
+    asAcyclicalChildren: Set<Organ>;
 
     //Organs with a PART_OF relationship on this organ in Sparc only
     asSparcChildren: Set<Organ>;
