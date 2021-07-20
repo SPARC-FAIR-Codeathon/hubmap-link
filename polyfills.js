@@ -7,7 +7,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/bherr/workspaces/hubmap/hubmap-link/hubmap-sparc/src/polyfills.ts */"hN/g");
+module.exports = __webpack_require__(/*! /home/runner/work/hubmap-link/hubmap-link/website/src/polyfills.ts */"hN/g");
 
 
 /***/ }),
