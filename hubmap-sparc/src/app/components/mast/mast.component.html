@@ -1,13 +1,16 @@
 <div>
     <mat-toolbar>
         <span>HuBMAP-SPARC</span>
-        <span fxFlex></span>
-        <!-- <button mat-icon-button 
-            matTooltip="Save & load" 
-            matTooltipClass="largerTooltip" 
-            aria-label="Save and load"
-            (click)="launchSaveLoadDialog()">
+
+        <button mat-raised-button class="margin-left-100" [ngClass]="{'selected': router.url === '/asctb-compare' || router.url === '/'}" routerLink="asctb-compare">
+            <mat-icon>collections_bookmark</mat-icon>
+            Partonomy Comparison
+        </button>
+        <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
             <mat-icon>file_download</mat-icon>
-        </button> -->
+            ASCT+B File Export
+        </button>
+       
+        <span fxFlex></span>
     </mat-toolbar>
 </div>

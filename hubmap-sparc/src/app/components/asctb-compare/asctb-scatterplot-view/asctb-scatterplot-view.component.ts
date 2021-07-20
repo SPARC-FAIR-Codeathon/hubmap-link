@@ -110,10 +110,8 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
 
 
     var g = this.svg.append("g")
-      .attr("class", "nodes")
-    //.selectAll("g")
-    //.data(this.fdNodes)
-    //.enter().append("g")
+      .attr("class", "nodes");
+
     var node_g = g
     .selectAll("circle")
       .data(this.fdNodes)
@@ -160,5 +158,34 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
       this.svg.attr("transform", event.transform);
     });
     zoom_handler(d3.select('#forcedirected-div'))
+  
+    //Node dragging
+    node_g.call(
+      d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended)
+    );
+
+    function dragstarted(event, d) {
+      d3.select(this).classed("fixed", d.fixed = true);
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      event.subject.fx = event.subject.x;
+      event.subject.fy = event.subject.y;
+    }
+    
+    function dragged(event) {
+      event.subject.fx = event.x;
+      event.subject.fy = event.y;
+    }
+    
+    function dragended(event) {
+      if (!event.active) simulation.alphaTarget(0);
+      event.subject.fx = null;
+      event.subject.fy = null;
+    }
+
+
+    
   }
 }
