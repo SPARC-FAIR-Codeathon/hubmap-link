@@ -27,6 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm ci
+        working-directory: website
       - run: npm run build -- --base-href=/hubmap-link/
         working-directory: website
 
