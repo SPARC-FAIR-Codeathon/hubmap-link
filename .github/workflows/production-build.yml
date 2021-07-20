@@ -1,0 +1,42 @@
+name: 'Production Build'
+
+on:
+  workflow_run:
+    branches: ['main']
+
+jobs:
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run build -- --base-href=/hubmap-link/
+        working-directory: website
+
+      - name: Setup GitHub Pages files
+        run: |
+          cp dist/hubmap-sparc/index.html dist/hubmap-sparc/404.html
+          touch dist/hubmap-sparc/.nojekyll
+        working-directory: website
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: website/dist/hubmap-sparc
+          commit_message: "Production deploy -- ${{ github.event.head_commit.message }}"
