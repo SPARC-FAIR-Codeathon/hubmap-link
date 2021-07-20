@@ -169,7 +169,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
 
       var expandedLinks = [];
       links.forEach(node => {
-        if(node.data.asParents.length > 1){ console.log('look for: ' + node.data.name);}
+        if(node.data.asParents.size > 1){ console.log('look for: ' + node.data.name + ", " + node.data.id);}
         node.data.asParents.forEach(parent => {
           let nextNode = Object.assign({}, node);
           nextNode.parent = parent;

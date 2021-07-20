@@ -27,3 +27,5 @@
     padding: 12px 5px 12px 5px; 
     border-radius: 5px;
 }
+
+mat-chip { padding: 4px 9px !important; }

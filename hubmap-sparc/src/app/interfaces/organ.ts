@@ -1,3 +1,5 @@
+import { CellType } from "./cellType";
+
 export interface Organ {
     id:string;
     name:string;
@@ -27,9 +29,9 @@ export interface Organ {
     asSharedChildren: Set<Organ>;
 
     //CellTypes with a PART_OF relationship on this organ in Sparc only
-    ctSparcChildren: Set<string>;
+    ctSparcChildren: Set<CellType>;
     //CellTypes with a PART_OF relationship on this organ in Hubmap only
-    ctHubmapChildren: Set<string>;
+    ctHubmapChildren: Set<CellType>;
     //CellTypes with a PART_OF relationship on this organ in Sparc and Hubmap
-    ctSharedChildren: Set<string>;
+    ctSharedChildren: Set<CellType>;
 }

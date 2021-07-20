@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
 import { Organ } from 'src/app/interfaces/organ';
+import { CellType } from '../interfaces/cellType';
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -16,21 +17,21 @@ export class AsctbCompareService {
   //View type currently selected by the user
   selectedViewType:string; // = 'table';
   //Organ type currently selected by the user
-  selectedOrganType = 'UBERON:0000955';
+  selectedOrganType = 'UBERON:0000948';
   //Human-readable data status string ['Not ready'|'Loading'|'Ready']
   dataLoadStatus = 'Not ready';
   //Selectable organ types in the UI control (@TODO: Externalize this to a resource file)
   organTypes = [
     {
-      name:'Brain', 
-      id:'UBERON:0000955', 
-      sparcUri: 'assets/data/sparc_brain.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_brain.json',
-      hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
-    },{
       name:'Heart', 
       id:'UBERON:0000948', 
       sparcUri:'assets/data/sparc_heart.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_heart.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1240281363'
+    },{
+      name:'Brain', 
+      id:'UBERON:0000955', 
+      sparcUri: 'assets/data/sparc_brain.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_brain.json',
+      hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
     },{
       name:'Kidney', 
       id:'UBERON:0002113', 
@@ -67,6 +68,7 @@ export class AsctbCompareService {
    *************************************************************************************/
   mergedOrganData: Organ = null;
   mergedOrganIdx: any = {}; //id:Organ index
+  mergedCellTypeIdx: any = {}; //id:CellType index
 
   /*************************************************************************************
    * Data structure suitable for table presentation
@@ -237,6 +239,19 @@ export class AsctbCompareService {
             let hubmapChildOrgan = rowObj.anatomical_structures[i+1];
             mergedOrgan.asHubmapChildren.add(this.mergedOrganIdx[hubmapChildOrgan.id]);
           }
+          //Add Cell types to the merged Organ from Hubmap
+          if(mergedOrgan.id === hubmapOrgan.id && rowObj.cell_types){
+            rowObj.cell_types.forEach((hubmapCt)=>{
+              //Pull the celltype reference from the index if it exists, otherwise initialize it
+              //Assign a surrogate id if it is missing
+              let ctId = hubmapCt.id || 'SURROGATE_ID:'+hubmapCt.name;
+              let cellType:CellType = (ctId in this.mergedCellTypeIdx) ? 
+                this.mergedCellTypeIdx[ctId] : 
+                this.initializeMergedCellType(ctId, hubmapCt.name, hubmapCt.rfs_label);
+                this.mergedCellTypeIdx[ctId] = cellType;
+                mergedOrgan.ctHubmapChildren.add(cellType);
+            });
+          }
         }
       });
       
@@ -255,6 +270,16 @@ export class AsctbCompareService {
       //Calculate subtraction of sharedChildren from sparcChildren 
       mergedOrgan.asSparcChildren = new Set([...mergedOrgan.asSparcChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)))
 
+
+
+      //Object.values(this.mergedOrganIdx).forEach((mergedOrgan:Organ) =>{
+
+
+
+
+
+
+
       //Update summary statistics
       this.countSparcASLinks += mergedOrgan.asSparcChildren.size;
       this.countHubmapASLinks += mergedOrgan.asHubmapChildren.size;
@@ -269,6 +294,13 @@ export class AsctbCompareService {
      * asAcyclicalChildren
      *************************************************************************************/
     this.augmentMergedOrganNode(this.mergedOrganData, null, new Set<Organ>());
+
+    //How many nodes have multiple parents?
+    let multiParentArr = Object.values(this.mergedOrganIdx).filter((organ: Organ)=>{
+      return organ.asParents.size > 1;
+    })
+    console.log('multiple parents? ' + multiParentArr.length);
+    console.dir(multiParentArr);
     
     //console.dir(this.countSparcASLinks)
 
@@ -291,9 +323,9 @@ export class AsctbCompareService {
         id: organ.id,
         name: organ.name,
         label: organ.label,
-        sharedCellTypes: null,
-        hubmapCellTypes: null,
-        sparcCellTypes: null,
+        sharedCellTypes: [],
+        hubmapCellTypes: Array.from(organ.ctHubmapChildren),
+        sparcCellTypes: [],
         sparcResident: organ.sparcResident,
         hubmapResident: organ.hubmapResident
       });
@@ -338,7 +370,7 @@ export class AsctbCompareService {
   private augmentMergedOrganNode(node: Organ, parent: Organ, visitedSet: Set<Organ>){
     visitedSet.add(node); //Add this node to the visited set so that we do not revisit
     if(parent){
-      node.asParents.add(parent);
+      
       //Find parent with maximum depth. Add as child of that parent. Remove from children of other parents
       let deepestParent = Array.from(node.asParents).reduce(function(prev, current) {
           return (prev.maxDepth > current.maxDepth) ? prev : current
@@ -356,6 +388,7 @@ export class AsctbCompareService {
     }
     //Iterate on next node
     node.asAllChildren.forEach((child)=>{
+      child.asParents.add(node);
       if(!visitedSet.has(child)){
         this.augmentMergedOrganNode(child, node, visitedSet);
       }
@@ -385,6 +418,17 @@ export class AsctbCompareService {
       ctSparcChildren: new Set(),
       ctHubmapChildren: new Set(),
       ctSharedChildren: new Set()
+    };
+  }
+
+  /*************************************************************************************
+   * Utility function to create an object conforming to the CellType interface
+   *************************************************************************************/
+   private initializeMergedCellType(id:string, name:string, label:string): CellType{
+    return {
+      id: id,
+      name: name,
+      label: label
     };
   }
 }
