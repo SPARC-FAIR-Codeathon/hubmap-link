@@ -19,4 +19,22 @@ export class SparcAsctbAjaxService {
   public fetchGenericJson(uri: string) {
     return this.http.get(uri, {responseType: 'json'});
   }
+
+
+  /***************************************************************************************************
+   * Execute a request against scigraph for partonomy data in relationship to the provided identifier
+   * Returns a promise on the ajax call response 
+   * relationshipType: http://purl.obolibrary.org/obo/BFO_0000050
+   ***************************************************************************************************/
+   public fetchSparcPartonomy(organIdentifier: string, relationshipType: string) {
+    let uri = 'https://scicrunch.org/api/1/scigraph/graph/neighbors/'
+      + organIdentifier
+      + '?depth=8&blankNodes=false&relationshipType='
+      + relationshipType
+      + '&direction=INCOMING&entail=false'
+      + 'key=SB5jsflPjsQcmfPqB1zS3XuDNx3sfd19';
+    return this.http.get(uri, {responseType: 'json'});
+  }
 }
+
+
