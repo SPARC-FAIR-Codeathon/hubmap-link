@@ -31,7 +31,7 @@ export class SparcAsctbAjaxService {
       + organIdentifier
       + '?depth=8&blankNodes=false&relationshipType='
       + relationshipType
-      + '&direction=INCOMING&entail=false'
+      + '&direction=INCOMING&entail=false&'
       + 'key=SB5jsflPjsQcmfPqB1zS3XuDNx3sfd19';
     return this.http.get(uri, {responseType: 'json'});
   }

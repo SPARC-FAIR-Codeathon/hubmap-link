@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
+import { AsctbGenerateService } from 'src/app/services/asctb-generate.service';
 
 @Component({
   selector: 'app-asctb-generate',
@@ -8,7 +9,8 @@ import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 })
 export class AsctbGenerateComponent implements OnInit {
 
-  constructor(public asctbCompareService: AsctbCompareService) { }
+  constructor(public asctbCompareService: AsctbCompareService,
+    private asctbGenerateService: AsctbGenerateService) { }
 
   public selections = {
     chooseFromList: true,
@@ -30,9 +32,9 @@ export class AsctbGenerateComponent implements OnInit {
 
     //Short circuit if nothing was selected
     if(!organIdentifier) return;
+    //Generate the local csv file
+    this.asctbGenerateService.generateAsctbDataForExport(organIdentifier, this.downloadFile);
 
-    //@TODO
-    this.downloadFile(fileName);
   }
 
 
@@ -42,17 +44,12 @@ export class AsctbGenerateComponent implements OnInit {
    * Utility function to download a file. Adapted from:
    * https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
    **************************************************************************************************************************/
-  private downloadFile(fileName){
-    const rows = [
-      ["name1", "city1", "some other info"],
-      ["name2", "city2", "more info"]
-    ];
-  
-    let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+  private downloadFile(fileName:string, csvStr:string){
+    let csvContent = "data:text/csv;charset=utf-8," + csvStr;
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "my_data.csv");
+    link.setAttribute("download", fileName);
     document.body.appendChild(link); // Required for FF
     link.click();
   }

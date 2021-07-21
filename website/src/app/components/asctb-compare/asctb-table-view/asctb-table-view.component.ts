@@ -11,15 +11,12 @@ export class AsctbTableViewComponent implements OnInit {
 
   constructor(public asctbCompareService: AsctbCompareService) { }
 
-  public displayedColumns: string[] = ['id', 'name', 'hubmap', 'sparc', 'cellTypes']; //'sharedCellTypes', 'hubmapCellTypes', 'sparcCellTypes', 'label'
+  public expandCellTypes: boolean = false; //When the user clicks the "more..." chip
+  public displayedColumns: string[] = ['id', 'name', 'hubmap', 'sparc', 'cellTypes']; 
 
   ngOnInit(): void {
   }
 
-  sortByColumn(columnName: string){
-    this.asctbCompareService.mergedTableArr.sort((a, b) => (a[columnName] > b[columnName]) ? 1 : ((b[columnName] > a[columnName]) ? -1 : 0));
-  }
-  
   getOrganIdReadable(id:string): string{
     return (id.indexOf('SURROGATE_ID') > -1)? '<NONE>': id;
   }

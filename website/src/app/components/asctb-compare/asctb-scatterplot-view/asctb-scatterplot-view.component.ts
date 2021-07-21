@@ -40,7 +40,7 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
 
     // Set the dimensions and margins of the diagram
     var element = d3.select('#forcedirected-div').node();
-    let wWidth = element.getBoundingClientRect().width;
+    let wWidth = element.getBoundingClientRect().width - 50;
     let wHeight = element.getBoundingClientRect().height;
     
     //let heightDynamicScale = Math.ceil((this.asctbCompareService.countTotalAS / 50) * element.getBoundingClientRect().height);
