@@ -1,10 +1,14 @@
 <div>
     <mat-toolbar>
-        <span>HuBMAP-SPARC</span>
+        <span>HuBMAP & SPARC Linking</span>
 
         <button mat-raised-button class="margin-left-100" [ngClass]="{'selected': router.url === '/asctb-compare' || router.url === '/'}" routerLink="asctb-compare">
             <mat-icon>collections_bookmark</mat-icon>
             Partonomy Comparison
+        </button>
+        <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/dataset-linkage'}" routerLink="dataset-linkage">
+            <mat-icon>table_view</mat-icon>
+            Dataset Linkage
         </button>
         <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
             <mat-icon>file_download</mat-icon>

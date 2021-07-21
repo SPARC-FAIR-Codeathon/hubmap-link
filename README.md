@@ -1,3 +1,55 @@
+# HuBMAP and SPARC Linkages
+> A tool to discover visualize SPARC and HuBMAP ontology and data linkages
+
+Description.
+
+
+## Installation
+
+The transpiled build artifacts are located in the /website/build/ directory and may be cloned or downloaded directly from Github. All files in the build directory should be deployed to the root directory of a static web server such as nginx or apache2.
+
+  
+## How to compile this project
+
+### Prerequisite software
+1. A GIT client such as https://git-scm.com/
+2. NodeJs & NPM - The latest build can be found at https://nodejs.org/en/download/
+3. Angular CLI - From the command line, execute the following:
+```
+> npm install -g @angular/cli
+```
+4. A capable web development IDE such as Visual Studio Code is suggested. 
+
+### Environment setup and compilation
+1. Clone the repository into your local environment
+```
+> git clone https://github.com/SPARC-FAIR-Codeathon/hubmap-link.git 
+```
+2. Install the project dependencies. Navigate to /website and execute the following npm command:
+```
+> npm install
+```
+3. To begin serving the project immediately out of your localhost on port 4200, execute the following command:
+```
+> ng serve
+```
+4. Alternatively, to build the project execute:
+```
+> ng build
+```
+Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build
+
+## Project structure
+
+
+## Background
+
+## Methodology & limitations
+
+## Links and acknowledgements
+
+
+
 # Visualizing Sample and Ontology linkages between HuBMAP and SPARC (hubmap-link)
 
 We propose to visualize and report on the linkages between HuBMAP and SPARC. We will

@@ -172,6 +172,7 @@ export class AsctbCompareService {
    *************************************************************************************/
   private mergeRawOrganData(){
 
+
     /*************************************************************************************
      * Step 1: Initialize and index merged organ objects without edge data
      *************************************************************************************/
@@ -299,11 +300,6 @@ export class AsctbCompareService {
     let multiParentArr = Object.values(this.mergedOrganIdx).filter((organ: Organ)=>{
       return organ.asParents.size > 1;
     })
-    console.log('multiple parents? ' + multiParentArr.length);
-    console.dir(multiParentArr);
-    
-    //console.dir(this.countSparcASLinks)
-
     this.countTotalAS = Object.keys(this.mergedOrganIdx).length;
     this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;
     this.countHubmapAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => !organ.sparcResident && organ.hubmapResident).length;

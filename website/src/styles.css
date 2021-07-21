@@ -43,7 +43,7 @@ circle.node.sparc  { stroke: darkslateblue; }
     stroke: #ccc;
     stroke-width: 2px;
 }
-.link.shared{ stroke: #ccc !important; z-index: 100; }
+.link.shared{ stroke: rgba(0, 139, 139, 0.7) !important; z-index: 100; }
 .link.sparc{ stroke:darkslateblue; }
 .link.hubmap{ stroke:rgb(144, 158, 121); }
 

@@ -71,32 +71,21 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
       if(node.group == 3) { return "darkslateblue"; } //Sparc
     }
 
-
-/*
-    .attr("class", "links")
-    .attr('class', function(d){
-      let classesStr = "link";
-      if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
-      if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
-      return classesStr;
-    })
-    .attr('class', function(d){
-        console.dir(d);
-        let parentOrgan = this.asctbCompareService.mergedOrganIdx[d.target];
-        let childOrgan = this.asctbCompareService.mergedOrganIdx[d.source];
-        let classesStr = "link";
-        if(parentOrgan.asSparcChildren.has(childOrgan)){ classesStr += " sparc" }
-        if(parentOrgan.asHubmapChildren.has(childOrgan)){ classesStr += " hubmap" }
-        return classesStr;
-      })
-  */  
-
     var link = this.svg.append("g")
       .attr("class", "link")
       .selectAll("line")
       .data(this.fdEdges)
       .enter().append("line")
-        .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+        .attr("stroke-width", function(d) { return Math.sqrt(d.value); })
+        .attr('class', function(d){
+          let classesStr = "link"; //@TODO
+          if(d.target.organ && d.source.organ){
+            if(d.target.organ.asSparcChildren.has(d.source.organ)){ classesStr += " sparc"; }
+            if(d.target.organ.asHubmapChildren.has(d.source.organ)){ classesStr += " hubmap"; }
+            if(d.target.organ.asSharedChildren.has(d.source.organ)){ classesStr += " shared"; }
+          }
+          return classesStr;
+        });
 
 
     var nodeColor = (node) => {
@@ -119,7 +108,11 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
 
     var node = node_g.append("circle")
       .attr("r", 5)
-      .attr("fill", function(d) { return nodeColor(d); });
+      .attr("fill", function(d) { return nodeColor(d); })
+      .attr('stroke-width', 2)
+      .attr('stroke', function(d) {
+        return (d.group == 1)? 'rgba(0, 139, 139, 0.7)' : null;
+      });
 
     //this.svg.selectAll("g.nodes")
     node_g

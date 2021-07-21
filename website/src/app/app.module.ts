@@ -52,6 +52,7 @@ import { AsctbScatterplotViewComponent } from './components/asctb-compare/asctb-
 import { AsctbTreemapViewComponent } from './components/asctb-compare/asctb-treemap-view/asctb-treemap-view.component';
 import { ColorLegendComponent } from './components/asctb-compare/color-legend/color-legend.component';
 import { AsctbGenerateComponent } from './components/asctb-generate/asctb-generate.component';
+import { DatasetLinkagesComponent } from './components/dataset-linkages/dataset-linkages.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { AsctbGenerateComponent } from './components/asctb-generate/asctb-genera
     AsctbScatterplotViewComponent,
     AsctbTreemapViewComponent,
     ColorLegendComponent,
-    AsctbGenerateComponent
+    AsctbGenerateComponent,
+    DatasetLinkagesComponent
   ],
   imports: [
     BrowserModule,

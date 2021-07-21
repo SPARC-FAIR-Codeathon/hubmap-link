@@ -91,8 +91,8 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
           .attr('class', 'node')
           .attr("transform", function(d) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
-        })
-        .on('click', click);
+        });
+        //.on('click', click);
 
       // Shared = white
       // Hubmap = blue
@@ -163,23 +163,21 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
         .style('fill-opacity', 1e-6);
 
       // ****************** links section ***************************
-
-      console.log('links');
-      console.dir(links);
-
+      // Index nodes by id
+      let linkIdx = {};
+      nodes.forEach(node => {
+        linkIdx[node.data.id] = node;
+      });
+      
+      //For nodes with multiple parents, duplicate them and copy each other parent node into the parent property
       var expandedLinks = [];
       links.forEach(node => {
-        if(node.data.asParents.size > 1){ console.log('look for: ' + node.data.name + ", " + node.data.id);}
         node.data.asParents.forEach(parent => {
           let nextNode = Object.assign({}, node);
-          nextNode.parent = parent;
-          expandedLinks.push(node);
+          nextNode.parent = linkIdx[parent.id];
+          expandedLinks.push(nextNode);
         });
       });
-
-      console.log("expandedLinks");
-      console.dir(expandedLinks);
-
 
       // Update the links...
       var link = svg.selectAll('path.link')
@@ -189,36 +187,16 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
       var linkEnter = link.enter().insert('path', "g")
         .attr("class", function(d){
           let classesStr = "link";
-          if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
-          if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
+          if(d.parent.data && d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
+          if(d.parent.data && d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
+          if(d.parent.data && d.parent.data.asSharedChildren.has(d.data)){ classesStr += " shared" }
+          
           return classesStr;
         })
         .attr('d', function(d){
           var o = {x: source.x0, y: source.y0}
           return diagonal(o, o)
         });
-
-
-      // Update the links...
-      /*
-      var link = svg.selectAll('path.link')
-        .data(links, function(d) { return d.id; });
-
-      var linkEnter = link.enter().insert('path', "g")
-        .attr("class", function(d){
-          let classesStr = "link";
-          if(d.parent.data.asSparcChildren.has(d.data)){ classesStr += " sparc" }
-          if(d.parent.data.asHubmapChildren.has(d.data)){ classesStr += " hubmap" }
-          return classesStr;
-        })
-        .attr('d', function(d){
-          var o = {x: source.x0, y: source.y0}
-          return diagonal(o, o)
-        });
-      */
-
-
-
 
       // UPDATE
       var linkUpdate = linkEnter.merge(link);
@@ -255,7 +233,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
       }
 
       // Toggle children on click.
-      function click(event, d) {
+      /*function click(event, d) {
         if (d.children) {
             d._children = d.children;
             d.children = null;
@@ -264,7 +242,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
             d._children = null;
           }
         update(d);
-      }
+      }*/
     }
 
 
