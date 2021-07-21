@@ -3,6 +3,8 @@
 
 Description.
 
+## Product demo
+A demo of the latest build is [available here](https://sparc-fair-codeathon.github.io/hubmap-link/).
 
 ## Installation
 
@@ -37,7 +39,7 @@ The transpiled build artifacts are located in the /website/build/ directory and 
 ```
 > ng build
 ```
-Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build
+Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build. Upon successful execution of the build command, the compiled artifacts are located in the /website/build/ directory and may be copied directly to a webserver.
 
 ## Project structure
 
