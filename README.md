@@ -27,8 +27,9 @@ The transpiled build artifacts are located in the /website/build/ directory and 
 ```
 > git clone https://github.com/SPARC-FAIR-Codeathon/hubmap-link.git 
 ```
-2. Install the project dependencies. Navigate to /website and execute the following npm command:
+2. Install the project library dependencies. Navigate to /website and execute an install:
 ```
+> cd website
 > npm install
 ```
 3. To begin serving the project immediately out of your localhost on port 4200, execute the following command:
@@ -42,9 +43,19 @@ The transpiled build artifacts are located in the /website/build/ directory and 
 Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build. Upon successful execution of the build command, the compiled artifacts are located in the /website/build/ directory and may be copied directly to a webserver.
 
 ## Project structure
-
+* /website/ - The parent directory of the hubmap-link web application
+  * /e2e/ - Configuration directory for application end-to-end testing
+  * /src/ - Project source code and assets
+    * /app/ - Angular application source code 
+      * /components/ - The web component hierarchy 
+      * /interfaces/ - Typescript interfaces
+      * /services/ - Modules to maintain inter-component state, data, and data-wrangling business logic
+    * /assets/ - Static web assets such as images and datafiles
+    * /environments/ - Build environment configuration
 
 ## Background
+
+Background.
 
 ## Methodology & limitations
 
