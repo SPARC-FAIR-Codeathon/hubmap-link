@@ -38,6 +38,10 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
     //Short-circuit when no data is available
     if(!this.fdNodes || !this.fdEdges || !this.asctbCompareService) return;
 
+    // Create id:node mapping
+    let nodeIdx = {}
+    this.fdNodes.forEach(node => { nodeIdx[node.id] = node.organ; });
+
     // Set the dimensions and margins of the diagram
     var element = d3.select('#forcedirected-div').node();
     let wWidth = element.getBoundingClientRect().width - 50;
@@ -83,6 +87,11 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
             if(d.target.organ.asSparcChildren.has(d.source.organ)){ classesStr += " sparc"; }
             if(d.target.organ.asHubmapChildren.has(d.source.organ)){ classesStr += " hubmap"; }
             if(d.target.organ.asSharedChildren.has(d.source.organ)){ classesStr += " shared"; }
+          } else {
+            console.dir(nodeIdx[d.target])
+            if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " sparc"; }
+            if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " hubmap"; }
+            if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " shared"; }
           }
           return classesStr;
         });
