@@ -46,7 +46,7 @@ export class SparcAsctbAjaxService {
   public fetchCypher<T = any>(cypher: string, apiKey: string, limit: number): Observable<T[]> {
     const endpoint = 'https://scicrunch.org/api/1/sparc-scigraph';
     const uri = `${endpoint}/cypher/execute?cypherQuery=${encodeURI(cypher)}&limit=${limit}&api_key=${apiKey}`;
-    return this.http.get<T[]>(uri, {headers: {'Content-type': 'application/json', responseType: 'json'}});
+    return this.http.get<T[]>(uri, {responseType: 'json', headers: {'Content-type': 'application/json'}});
   }
 
   public fetchSparcUberonToClMappings(apiKey: string) {
