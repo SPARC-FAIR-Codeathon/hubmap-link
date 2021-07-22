@@ -98,5 +98,5 @@ In cases where HuBMAP concepts lacked an annotated ontological identifier, a cas
 
 **Team Members**:
 
-* Bruce W. Herr II (@bherr2)
-* Samuel O'Blenes (@soblenes32)
+* Bruce W. Herr II ([@bherr2](https://github.com/bherr2))
+* Samuel O'Blenes ([@soblenes32](https://github.com/soblenes32))
