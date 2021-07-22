@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ApiKeystoreService } from '../api-keystore.service';
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -26,13 +27,15 @@ export class SparcAsctbAjaxService {
    * Returns a promise on the ajax call response 
    * relationshipType: http://purl.obolibrary.org/obo/BFO_0000050
    ***************************************************************************************************/
-   public fetchSparcPartonomy(organIdentifier: string, relationshipType: string) {
+   public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string) {
     let uri = 'https://scicrunch.org/api/1/scigraph/graph/neighbors/'
       + organIdentifier
-      + '?depth=8&blankNodes=false&relationshipType='
+      + '?depth=' 
+      + depth 
+      + '&blankNodes=false&relationshipType='
       + relationshipType
       + '&direction=INCOMING&entail=false&'
-      + 'key=SB5jsflPjsQcmfPqB1zS3XuDNx3sfd19';
+      + 'key=' + apiKey;
     return this.http.get(uri, {responseType: 'json'});
   }
 }

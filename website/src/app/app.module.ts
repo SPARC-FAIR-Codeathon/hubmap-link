@@ -53,6 +53,7 @@ import { AsctbTreemapViewComponent } from './components/asctb-compare/asctb-tree
 import { ColorLegendComponent } from './components/asctb-compare/color-legend/color-legend.component';
 import { AsctbGenerateComponent } from './components/asctb-generate/asctb-generate.component';
 import { DatasetLinkagesComponent } from './components/dataset-linkages/dataset-linkages.component';
+import { ApiKeyComponent } from './components/api-key/api-key.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { DatasetLinkagesComponent } from './components/dataset-linkages/dataset-
     AsctbTreemapViewComponent,
     ColorLegendComponent,
     AsctbGenerateComponent,
-    DatasetLinkagesComponent
+    DatasetLinkagesComponent,
+    ApiKeyComponent
   ],
   imports: [
     BrowserModule,

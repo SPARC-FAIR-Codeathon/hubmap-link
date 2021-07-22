@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiKeystoreService } from 'src/app/services/api-keystore.service';
 
 @Component({
   selector: 'app-mast',
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class MastComponent implements OnInit {
 
-  constructor(public router: Router) { }
+  constructor(public router: Router, public apiKeystoreService:ApiKeystoreService) { }
 
   ngOnInit(): void {
   }

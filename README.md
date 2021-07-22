@@ -43,21 +43,32 @@ The transpiled build artifacts are located in the /website/build/ directory and 
 Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build. Upon successful execution of the build command, the compiled artifacts are located in the /website/build/ directory and may be copied directly to a webserver.
 
 ## Project structure
-* /website/ - The parent directory of the hubmap-link web application
-  * /e2e/ - Configuration directory for application end-to-end testing
-  * /src/ - Project source code and assets
-    * /app/ - Angular application source code 
-      * /components/ - The web component hierarchy 
-      * /interfaces/ - Typescript interfaces
-      * /services/ - Modules to maintain inter-component state, data, and data-wrangling business logic
-    * /assets/ - Static web assets such as images and datafiles
-    * /environments/ - Build environment configuration
+* /website/ - Parent directory of the hubmap-link web application
+* /website/e2e/ - Configuration directory for application end-to-end testing
+* /website/src/ - Project source code and assets
+* /website/src/app/ - Angular application source code 
+* /website/src/app/components/ - The web component hierarchy 
+* /website/src/app/interfaces/ - Typescript interfaces
+* /website/src/app/services/ - Modules to maintain inter-component state, data, and data-wrangling business logic
+* /website/src/assets/ - Static web assets such as images and datafiles
+* /website/src/environments/ - Build environment configuration
 
 ## Background
 
 Background.
 
 ## Methodology & limitations
+### SPARC datasources
+
+SciGraph
+
+### HuBMAP datasources
+
+HuBMAP
+
+
+### Merging datasources 
+In cases where HuBMAP concepts lacked an annotated ontological identifier, a case-insensitive name lookup was executed against all exact synonym terms in the SPARC dataset. In the event of a term match, the ID associated with the synonimous term hit was applied to the 
 
 ## Links and acknowledgements
 

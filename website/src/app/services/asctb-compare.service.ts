@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
 import { Organ } from 'src/app/interfaces/organ';
 import { CellType } from '../interfaces/cellType';
+import { ApiKeystoreService } from './api-keystore.service';
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -25,27 +26,27 @@ export class AsctbCompareService {
     {
       name:'Heart', 
       id:'UBERON:0000948', 
-      sparcUri:'assets/data/sparc_heart.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_heart.json',
+      //sparcUri:'assets/data/sparc_heart.json', 
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1240281363'
     },{
       name:'Brain', 
       id:'UBERON:0000955', 
-      sparcUri: 'assets/data/sparc_brain.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_brain.json',
+      //sparcUri: 'assets/data/sparc_brain.json', 
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
     },{
       name:'Kidney', 
       id:'UBERON:0002113', 
-      sparcUri:'assets/data/sparc_kidney.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_kidney.json',
+      //sparcUri:'assets/data/sparc_kidney.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1760639962'
     },{
       name:'Large intestine', 
       id:'UBERON:0000059', 
-      sparcUri:'assets/data/sparc_large-intestine.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_large-intestine.json',
+      //sparcUri:'assets/data/sparc_large-intestine.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1687995716'
     },{
       name:'Lymph nodes', 
       id:'UBERON:0000029', 
-      sparcUri:'assets/data/sparc_lymph-nodes.json', //'https://raw.githubusercontent.com/SPARC-FAIR-Codeathon/hubmap-link/features/export_asctb_csv/data/sparc_lymph-nodes.json',
+      //sparcUri:'assets/data/sparc_lymph-nodes.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/272157091'
     }
   ];
@@ -53,6 +54,10 @@ export class AsctbCompareService {
   //Organ hierarchial data
   sparcRawOrganData = null;
   hubmapRawOrganData = null;
+  sparcTreeOrganData = null;
+
+  //Synonym data in form {<synonym:string>:<id:string>}
+  synonymIdx = null;
 
   //Dataset summary statistics
   countTotalAS:number = 0;
@@ -81,7 +86,8 @@ export class AsctbCompareService {
   fdNodes = []; // {id: "UBERON:00012345", group: 1, organ:{...}}
   fdEdges = []; // {source: "UBERON:00012345", target: "UBERON:00012346", value: 1}
 
-  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService) {}
+  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService,
+    private apiKeystoreService: ApiKeystoreService) {}
 
   /*************************************************************************************
    * Fetch data for the selected organ from SPARC and HuBMAP. After data has been
@@ -89,13 +95,17 @@ export class AsctbCompareService {
    * for presentation.
    *************************************************************************************/
   public loadOrganData(){
+
+
     //Get the selected organ type object
     let selectedOrganObj = this.organTypes.find((t)=>{return t.id === this.selectedOrganType});
 
     //Reset the data references
     this.sparcRawOrganData = null;
+    this.sparcTreeOrganData = null;
     this.hubmapRawOrganData = null;
     this.mergedOrganData = null;
+    this.synonymIdx = null;
     this.mergedOrganIdx = {};
     this.countTotalAS = 0;
 
@@ -111,24 +121,28 @@ export class AsctbCompareService {
     this.dataLoadStatus = 'Loading';
 
     //Fetch sparc data if a data uri is available
-    if(selectedOrganObj.sparcUri){
-      this.sparcAsctbAjaxService.fetchGenericJson(selectedOrganObj.sparcUri).subscribe({
-          next: (response:any) => {
-            this.sparcRawOrganData = response;
-            if(this.hubmapRawOrganData != null){
-              this.restructureRawOrganData(); // Execute merge only if hubmap data is also ready
-            }
-          },
-          error: (error) => { console.error(error); }
-        });
+    if(this.apiKeystoreService.sparcSciCrunchApiKey){
+      this.sparcAsctbAjaxService.fetchSparcPartonomy(selectedOrganObj.id, 'http://purl.obolibrary.org/obo/BFO_0000050', 10, this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
+        next: (response:any) => {
+          this.sparcRawOrganData = response;
+          // Reorganize raw response into tree format
+          this.sparcTreeOrganData = this.sciGraphQueryToTree(response, selectedOrganObj.id);
+          // Extract synonym index
+          this.synonymIdx = this.sciGraphQueryToSynonymIdx(response);
+          if(this.hubmapRawOrganData != null){
+            this.restructureRawOrganData(); // Execute merge only if hubmap data is also ready
+          }
+        },
+        error: (error) => { console.error(error); }
+      });
     }
-
+    
     //Fetch HuBMAP data if a data uri is available
     if(selectedOrganObj.hubmapUri){
       this.sparcAsctbAjaxService.fetchGenericJson(selectedOrganObj.hubmapUri).subscribe({
         next: (response:any) => { 
           this.hubmapRawOrganData = response;
-          if(this.sparcRawOrganData != null){
+          if(this.sparcTreeOrganData != null){
             this.restructureRawOrganData(); // Execute merge only if sparc data is also ready
           }
         },
@@ -179,7 +193,7 @@ export class AsctbCompareService {
 
     //Construct an index on id:node for each sparc organ
     let sparcOrganIdx = {};
-    this.indexSparcOrganTree(sparcOrganIdx, this.sparcRawOrganData);
+    this.indexSparcOrganTree(sparcOrganIdx, this.sparcTreeOrganData);
 
     //Construct an index on id:node for each hubmap organ
     //Iterate over hubmap organs and initialize any that do not already exist
@@ -188,9 +202,20 @@ export class AsctbCompareService {
     this.hubmapRawOrganData.data.forEach((rowObj: any)=>{
       rowObj.anatomical_structures.forEach(organ => {
         //Hubmap anatomical structures have form {id: "UBERON:0000948", name: "heart", rdfs_label: "heart"}
-        //Some Hubmap organs do not have an ID but do have a name. When this occurs, create a surrogate "smart" ID
+        /**************************************************************************************************************************
+         * Some Hubmap organs do not have an ID but do have a name. When this occurs, first search the index of
+         * synonyms. If a term match is found, assign the associated ID. Otherwise, create a surrogate "smart" ID
+        **************************************************************************************************************************/
+
+
         if(!organ.id || organ.id == ''){
-          organ.id = 'SURROGATE_ID:' + organ.name.toUpperCase();
+          let nameMatchedId = this.synonymIdx[organ.name];
+          if(nameMatchedId){
+            organ.id = nameMatchedId;
+            console.log('matched by name: ' + organ.name + ', id' + organ.id);
+          }else{
+            organ.id = 'SURROGATE_ID:' + organ.name.toUpperCase();
+          }
         }
         hubmapOrganIdx[organ.id] = organ;
       });
@@ -212,7 +237,7 @@ export class AsctbCompareService {
     });
 
     //Point mergedOrganData at the root node
-    this.mergedOrganData = this.mergedOrganIdx[this.sparcRawOrganData.id]
+    this.mergedOrganData = this.mergedOrganIdx[this.sparcTreeOrganData.id]
 
     /*************************************************************************************
      * Step 2: Add edge data to mergedOrganData
@@ -391,6 +416,63 @@ export class AsctbCompareService {
     });
   }
 
+
+  /*************************************************************************************
+   * Utility function to restructure a raw SciGraph neighbor query response into a
+   * tree structure. Returns the root node of the tree
+   * @Return Example:
+   * {
+   *  "name":"atrium auricular region",
+   *  "id": "UBERON:0006618",
+      "label": "atrium auricular region",
+      "children": [<child1>, <child2>, ...]
+    }
+   *************************************************************************************/
+  private sciGraphQueryToTree(scigraphRawData:any, organId:string): any{
+    let nodeList = []
+    let nodeIdx = {}
+    scigraphRawData['nodes'].forEach(node => {
+      let abbreviatedNode = {'name':node['lbl'], 'label': node['lbl'], 'id': node['id']}
+      nodeList.push(abbreviatedNode)
+      nodeIdx[node['id']] = abbreviatedNode
+    });
+        
+    //Index terms by edge "object" ID to facilitate ancestry resolution
+    let objEdgeIdx = {} //Index to look up children from a term id
+    let subEdgeIdx = {} //Index to look up parent from a term id
+    scigraphRawData['edges'].forEach(edge => {
+      objEdgeIdx[edge['obj']] = objEdgeIdx[edge['obj']] || []; //Initialize array if not already
+      objEdgeIdx[edge['obj']].push(nodeIdx[edge['sub']]);
+      subEdgeIdx[edge['sub']] = nodeIdx[edge['obj']];
+    });
+
+    nodeList.forEach((node)=>{
+      node.children = objEdgeIdx[node.id];
+    });
+    return nodeIdx[organId];
+  }
+
+  /*************************************************************************************
+   * Utility function to extract synonym string associations with ontology IDs
+   * @Return Example: 
+   * { 
+   *  "atrial auricle" : "UBERON:0006618",
+   *  "atrium appendage" : "UBERON:0006618",
+   *  "auricula atrii" : "UBERON:0006618",
+   *  ...
+   * }
+   *************************************************************************************/
+  private sciGraphQueryToSynonymIdx(scigraphRawData:any): any{
+    let termToIdIdx = {};
+    scigraphRawData.nodes.forEach((node) => {
+      if(node.meta['http://www.geneontology.org/formats/oboInOwl#hasExactSynonym']){
+        node.meta['http://www.geneontology.org/formats/oboInOwl#hasExactSynonym'].forEach(synonym => {
+          termToIdIdx[synonym] = node.id;
+        });
+      }
+    });
+    return termToIdIdx;
+  }
 
 
   /*************************************************************************************

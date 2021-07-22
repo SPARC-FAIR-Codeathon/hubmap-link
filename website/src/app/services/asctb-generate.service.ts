@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
+import { ApiKeystoreService } from './api-keystore.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AsctbGenerateService {
 
-  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService) { }
+  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService,
+    private apiKeystoreService: ApiKeystoreService) { }
 
   /*************************************************************************************************
    * Execute a request against SPARC scigraph for all neighbors across PART_OF relationships
@@ -14,7 +16,7 @@ export class AsctbGenerateService {
    *************************************************************************************************/
   public generateAsctbDataForExport(organIdentifier:string, callback:Function){
     if(organIdentifier){
-      return this.sparcAsctbAjaxService.fetchSparcPartonomy(organIdentifier, 'http://purl.obolibrary.org/obo/BFO_0000050').subscribe({
+      return this.sparcAsctbAjaxService.fetchSparcPartonomy(organIdentifier, 'http://purl.obolibrary.org/obo/BFO_0000050', 10, this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
         next: (response:any) => {
           let csvStr = this.parseSparcNeighborResponseToAsctbCsv(response, organIdentifier);
           callback((organIdentifier + '_SPARC_ASCTB.csv'), csvStr);
