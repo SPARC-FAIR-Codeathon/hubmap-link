@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ApiKeystoreService } from '../api-keystore.service';
 
 /*******************************************************************************************
@@ -12,7 +13,10 @@ import { ApiKeystoreService } from '../api-keystore.service';
   providedIn: 'root'
 })
 export class SparcAsctbAjaxService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    // TODO: REMOVE ME
+    this.fetchSparcUberonToClMappings(localStorage.getItem('SCICRUNCH_API_KEY')).toPromise().then(console.log);
+  }
 
   /**********************************************************************
    * Returns a promise on the ajax call response
@@ -28,7 +32,7 @@ export class SparcAsctbAjaxService {
    * relationshipType: http://purl.obolibrary.org/obo/BFO_0000050
    ***************************************************************************************************/
    public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string) {
-    let uri = 'https://scicrunch.org/api/1/sparc-scigraph/graph/neighbors/'
+    const uri = 'https://scicrunch.org/api/1/sparc-scigraph/graph/neighbors/'
       + organIdentifier
       + '?depth='
       + depth
@@ -38,6 +42,15 @@ export class SparcAsctbAjaxService {
       + 'key=' + apiKey;
     return this.http.get(uri, {responseType: 'json'});
   }
+
+  public fetchCypher<T = any>(cypher: string, apiKey: string, limit: number): Observable<T[]> {
+    const endpoint = 'https://scicrunch.org/api/1/sparc-scigraph';
+    const uri = `${endpoint}/cypher/execute?cypherQuery=${encodeURI(cypher)}&limit=${limit}&api_key=${apiKey}`;
+    return this.http.get<T[]>(uri, {headers: {'Content-type': 'application/json', responseType: 'json'}});
+  }
+
+  public fetchSparcUberonToClMappings(apiKey: string) {
+    const query = `MATCH (u)-[r]->(cl) WHERE u.iri STARTS WITH 'http://purl.obolibrary.org/obo/UBERON_' AND cl.iri STARTS WITH 'http://purl.obolibrary.org/obo/CL_' RETURN u.iri, u.label, r.iri, r.lbl, cl.iri, cl.label`;
+    return this.fetchCypher(query, apiKey, 1000);
+  }
 }
-
-
