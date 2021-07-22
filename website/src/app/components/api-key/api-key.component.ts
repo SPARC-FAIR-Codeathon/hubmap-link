@@ -9,16 +9,18 @@ import { ApiKeystoreService } from 'src/app/services/api-keystore.service';
 })
 export class ApiKeyComponent implements OnInit {
 
-  public scicrunchApiKey = null;
-  constructor(private apiKeystoreService: ApiKeystoreService,
-    public router: Router) { }
+  public scicrunchApiKey: string;
+  constructor(private apiKeystoreService: ApiKeystoreService, public router: Router) { }
 
   ngOnInit(): void {
+    if (this.apiKeystoreService.sparcSciCrunchApiKey) {
+      this.scicrunchApiKey = this.apiKeystoreService.sparcSciCrunchApiKey;
+      this.router.navigate(['asctb-compare']);
+    }
   }
 
   setKey(){
     this.apiKeystoreService.sparcSciCrunchApiKey = this.scicrunchApiKey;
     this.router.navigate(['asctb-compare']);
   }
-
 }
