@@ -24,14 +24,14 @@ export class SparcAsctbAjaxService {
 
   /***************************************************************************************************
    * Execute a request against scigraph for partonomy data in relationship to the provided identifier
-   * Returns a promise on the ajax call response 
+   * Returns a promise on the ajax call response
    * relationshipType: http://purl.obolibrary.org/obo/BFO_0000050
    ***************************************************************************************************/
    public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string) {
-    let uri = 'https://scicrunch.org/api/1/scigraph/graph/neighbors/'
+    let uri = 'https://scicrunch.org/api/1/sparc-scigraph/graph/neighbors/'
       + organIdentifier
-      + '?depth=' 
-      + depth 
+      + '?depth='
+      + depth
       + '&blankNodes=false&relationshipType='
       + relationshipType
       + '&direction=INCOMING&entail=false&'
