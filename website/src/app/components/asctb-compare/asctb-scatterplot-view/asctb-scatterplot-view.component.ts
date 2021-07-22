@@ -88,10 +88,9 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
             if(d.target.organ.asHubmapChildren.has(d.source.organ)){ classesStr += " hubmap"; }
             if(d.target.organ.asSharedChildren.has(d.source.organ)){ classesStr += " shared"; }
           } else {
-            console.dir(nodeIdx[d.target])
             if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " sparc"; }
-            if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " hubmap"; }
-            if(Array.from(nodeIdx[d.target].asSparcChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " shared"; }
+            if(Array.from(nodeIdx[d.target].asHubmapChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " hubmap"; }
+            if(Array.from(nodeIdx[d.target].asSharedChildren).indexOf(nodeIdx[d.source]) > -1){ classesStr += " shared"; }
           }
           return classesStr;
         });
