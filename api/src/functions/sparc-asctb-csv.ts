@@ -72,6 +72,7 @@ function convertResponsesToCsvRows(organIdentifier: string, graph: Graph, clLink
   const headerArr = [
     ['Anatomical Strucures, Cell Types and Biomarkers Table for ' + nodeIdx[organIdentifier].name + ' v2.0'],
     [],
+    [],
     ['Author Name(s):'],
     ['Author ORCID(s):'],
     ['Reviewer(s):'],
