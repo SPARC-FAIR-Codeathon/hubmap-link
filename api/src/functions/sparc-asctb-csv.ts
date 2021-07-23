@@ -71,7 +71,7 @@ function convertResponsesToCsvRows(organIdentifier: string, graph: Graph, clLink
   // Generate header rows
   const headerArr = [
     ['Anatomical Strucures, Cell Types and Biomarkers Table for ' + nodeIdx[organIdentifier].name + ' v2.0'],
-    [' '],
+    ['_'], // the ASCT+B API is greedy removing rows which breaks it here.
     ['Author Name(s):'],
     ['Author ORCID(s):'],
     ['Reviewer(s):'],
