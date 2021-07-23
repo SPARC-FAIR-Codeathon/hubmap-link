@@ -80,7 +80,7 @@ function convertResponsesToCsvRows(organIdentifier: string, graph: Graph, clLink
     ['Date:', new Date().toLocaleDateString()],
     ['Version Number:', 'v1.0'],
     ['CEDAR Template ID:']
-  ];
+  ].map((row) => row.concat(Array(((max_depth - row.length) * 3) + 1)));
 
   return [
     ...headerArr,
