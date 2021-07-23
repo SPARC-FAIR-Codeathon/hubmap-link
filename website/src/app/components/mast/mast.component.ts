@@ -14,4 +14,7 @@ export class MastComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  clearKey(): void{
+    this.apiKeystoreService.sparcSciCrunchApiKey = null;
+  }
 }

@@ -1,1 +1,17 @@
-<p>dataset-linkages works!</p>
+
+<div *ngIf="metaDataService.datasetArr.length < 1">
+    Please wait...
+</div>
+<table *ngIf="metaDataService.datasetArr.length > 0">
+    <thead>
+        <tr><td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
+            <strong>{{col}}</strong>
+        </td></tr>
+    </thead><tbody>
+        <tr *ngFor="let row of metaDataService.datasetArr">
+            <td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
+                {{row[col]}}
+            </td>
+        </tr>
+    </tbody>
+</table>

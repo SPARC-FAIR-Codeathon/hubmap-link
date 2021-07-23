@@ -20,8 +20,7 @@
         </div>
 
         <span fxFlex></span>
-
-            <button mat-mini-fab aria-label="Change API key" matTooltip="Change API key"  routerLink=""  *ngIf="apiKeystoreService.sparcSciCrunchApiKey">
+            <button mat-mini-fab aria-label="Change API key" matTooltip="Change API key"  routerLink=""  *ngIf="apiKeystoreService.sparcSciCrunchApiKey" (click)="clearKey()">
                 <mat-icon>lock_open</mat-icon>
             </button>
     </mat-toolbar>

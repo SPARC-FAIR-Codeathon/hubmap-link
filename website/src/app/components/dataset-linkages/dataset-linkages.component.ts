@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MetaDataAjaxService } from 'src/app/services/ajax/meta-data-ajax.service';
+import { MetaDataService } from 'src/app/services/meta-data.service';
 
 @Component({
   selector: 'app-dataset-linkages',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DatasetLinkagesComponent implements OnInit {
 
-  constructor() { }
+  constructor(public metaDataService: MetaDataService) { }
 
   ngOnInit(): void {
+    this.metaDataService.fetchMetadata();
   }
 
+  getObjectKeys(obj:any):string[]{
+    return Object.keys(obj);
+  }
 }
