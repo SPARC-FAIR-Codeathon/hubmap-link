@@ -12,6 +12,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public/')));
 
+// Global caching of responses
+app.use(function (req, res, next) {
+  res.set('Cache-control', 'public, max-age=300');
+  next();
+});
+
 setupAsGraphRoute(app);
 setupSparcDatasetsRoute(app);
 setupUberonClLinkRoute(app);
