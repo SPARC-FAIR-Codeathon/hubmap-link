@@ -21,7 +21,7 @@ setupAsctbCsvRoute(app);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.set('json spaces', 2);
-app.use(routeCache(1200));
+app.use(routeCache(12000));
 
 // json routes
 setupAsGraphRoute(app);
