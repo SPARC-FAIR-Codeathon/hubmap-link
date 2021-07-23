@@ -11,7 +11,7 @@ export async function fetchSparcUberonToClMappings(apiKey: string): Promise<any[
       AND cl.iri STARTS WITH 'http://purl.obolibrary.org/obo/CL_'
     RETURN u.iri, u.label, r.iri, r.lbl, cl.iri, cl.label
   `;
-  const data = await fetchCypher(query, apiKey, 300);
+  const data = await fetchCypher(query, apiKey, 10000);
 
   // https://scicrunch.org/api/1/sparc-scigraph only returns plain text when 
   // it should be returning json. This subroutine deals with the oddity for
