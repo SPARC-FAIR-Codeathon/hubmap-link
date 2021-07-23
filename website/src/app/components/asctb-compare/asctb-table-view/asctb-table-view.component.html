@@ -49,7 +49,7 @@
                 </mat-chip-list>
 
                 <mat-chip-list *ngIf="expandCellTypes">
-                    <mat-chip *ngFor="let celltype of organ.hubmapCellTypes; let i=index" matTooltip="{{celltype.id}}"
+                    <mat-chip *ngFor="let celltype of organ.allCellTypes; let i=index" matTooltip="{{celltype.id}}"
                         [ngClass]="{'background-sparc':(organ.sparcCellTypes.indexOf(celltype) > -1), 'background-hubmap':(organ.hubmapCellTypes.indexOf(celltype) > -1), 'background-shared':(organ.sharedCellTypes.indexOf(celltype) > -1)}"> 
                         {{celltype.name}} 
                     </mat-chip>

@@ -176,7 +176,7 @@ export class AsctbCompareService {
 
     //Construct an index on id:node for each sparc organ
     let sparcOrganIdx = {};
-    this.indexSparcOrganTree(sparcOrganIdx, this.sparcTreeOrganData);
+    this.indexSparcOrganTree(sparcOrganIdx, this.sparcTreeOrganData, new Set());
 
     //Construct an index on id:node for each hubmap organ
     //Iterate over hubmap organs and initialize any that do not already exist
@@ -384,12 +384,17 @@ export class AsctbCompareService {
   /*************************************************************************************
    * Depth-first walk of sparc organ tree datastructure to construct an id:organ index
    *************************************************************************************/
-  private indexSparcOrganTree(idx, node){
-    if(node.id.indexOf('CL:') < 0){ //Do not traverse any celltype nodes that are encountered
+  private indexSparcOrganTree(idx, node, visited){
+    if(node.id.indexOf('CL:') < 0 && !visited.has(node)){ //Do not traverse any celltype nodes that are encountered
       idx[node.id] = node;
+      visited.add(node);
+
+      //console.dir(visited);
+      console.dir(visited);
+
       if(node.children && node.children.length > 0){
         node.children.filter(o=>!!o).forEach(organ => {
-          this.indexSparcOrganTree(idx, organ);
+          this.indexSparcOrganTree(idx, organ, visited);
         });
       }
     }
