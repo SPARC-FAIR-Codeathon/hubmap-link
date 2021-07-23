@@ -1,4 +1,4 @@
-import { fetchCypher } from "./fetch-cypher";
+import { fetchCypher } from './fetch-cypher';
 
 
 export function fetchSparcUberonToClMappings(apiKey: string): Promise<any[]> {

@@ -32,3 +32,24 @@ export async function fetchElasticSearch(query: any, limit: number, apiKey: stri
     throw new Error(response.statusText);
   }
 }
+
+export async function fetchHuBMAPElasticSearch(query: any, limit: number): Promise<ESResponse> {
+  const uri = 'https://search.api.hubmapconsortium.org/entities/search';
+  query = { ...query, version: true, size: limit };
+
+  const response = await axios.post<ESResponse>(uri, query, {
+    responseType: 'json',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Accept-Encoding': 'gzip, deflate, br'
+    },
+    decompress: true
+  });
+
+  if (response.status === 200 && response.data) {
+    return response.data;
+  } else {
+    throw new Error(response.statusText);
+  }
+}

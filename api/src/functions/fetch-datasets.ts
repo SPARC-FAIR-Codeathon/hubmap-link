@@ -1,4 +1,4 @@
-import { fetchElasticSearch } from "./fetch-elastic-search";
+import { fetchElasticSearch } from './fetch-elastic-search';
 
 
 export function fetchSparcDatasets(apiKey: string): Promise<any> {

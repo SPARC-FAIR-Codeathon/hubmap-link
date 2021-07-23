@@ -21,6 +21,8 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "memory-cache": "^0.2.0",
     "papaparse": "^5.3.1",
     "typescript": "^4.3.5"
   },
@@ -28,6 +30,8 @@
     "@types/cors": "^2.8.12",
     "@types/debug": "^4.1.6",
     "@types/express": "^4.17.13",
+    "@types/lodash": "^4.14.171",
+    "@types/memory-cache": "^0.2.1",
     "@types/node": "^16.4.1",
     "@types/papaparse": "^5.2.6",
     "@typescript-eslint/eslint-plugin": "^4.28.4",

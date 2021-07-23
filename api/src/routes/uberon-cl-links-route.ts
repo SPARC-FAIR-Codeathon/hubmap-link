@@ -1,6 +1,6 @@
 import { Express, Request, Response } from 'express';
 import { fetchSparcUberonToClMappings } from '../functions/fetch-uberon-cl-links';
-import { apiKey } from './../functions/api-key';
+import { apiKey } from '../functions/api-key';
 
 
 export function setupUberonClLinkRoute(app: Express): void {
