@@ -388,10 +388,6 @@ export class AsctbCompareService {
     if(node.id.indexOf('CL:') < 0 && !visited.has(node)){ //Do not traverse any celltype nodes that are encountered
       idx[node.id] = node;
       visited.add(node);
-
-      //console.dir(visited);
-      console.dir(visited);
-
       if(node.children && node.children.length > 0){
         node.children.filter(o=>!!o).forEach(organ => {
           this.indexSparcOrganTree(idx, organ, visited);
