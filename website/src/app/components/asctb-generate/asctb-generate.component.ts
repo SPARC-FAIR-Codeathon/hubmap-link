@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
-import { AsctbGenerateService } from 'src/app/services/asctb-generate.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-asctb-generate',
@@ -8,9 +8,9 @@ import { AsctbGenerateService } from 'src/app/services/asctb-generate.service';
   styleUrls: ['./asctb-generate.component.css']
 })
 export class AsctbGenerateComponent implements OnInit {
+  endpoint = environment.apiEndpoint;
 
-  constructor(public asctbCompareService: AsctbCompareService,
-    private asctbGenerateService: AsctbGenerateService) { }
+  constructor(public asctbCompareService: AsctbCompareService) { }
 
   public selections = {
     chooseFromList: true,
@@ -24,8 +24,16 @@ export class AsctbGenerateComponent implements OnInit {
     }
   }
 
+
   exportClick(): void {
-    console.log('export click event');
+    let organIdentifier = (this.selections.chooseFromList) ? 
+      this.selections.selectedOrgan.id : this.selections.inputOrganIdentifier;
+    let url = `${this.endpoint}/asctb/${organIdentifier}?format=csv`;
+    window.open(url);
+  }
+
+  /*
+  exportClick(): void {
     let organIdentifier = (this.selections.chooseFromList) ? 
       this.selections.selectedOrgan.id : this.selections.inputOrganIdentifier;
     let fileName = organIdentifier+".csv"
@@ -36,14 +44,13 @@ export class AsctbGenerateComponent implements OnInit {
     this.asctbGenerateService.generateAsctbDataForExport(organIdentifier, this.downloadFile);
 
   }
-
-
-
+  */
 
   /**************************************************************************************************************************
    * Utility function to download a file. Adapted from:
    * https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
    **************************************************************************************************************************/
+  /*
   private downloadFile(fileName:string, csvStr:string){
     let csvContent = "data:text/csv;charset=utf-8," + csvStr;
     var encodedUri = encodeURI(csvContent);
@@ -53,4 +60,5 @@ export class AsctbGenerateComponent implements OnInit {
     document.body.appendChild(link); // Required for FF
     link.click();
   }
+  */
 }

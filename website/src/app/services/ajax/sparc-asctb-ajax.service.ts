@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -25,11 +25,22 @@ export class SparcAsctbAjaxService {
     return this.http.get<T>(uri, {responseType: 'json'});
   }
 
-  public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string): Observable<any[]> {
+  public fetchSparcPartonomy(organIdentifier: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.endpoint}/as-graph/${organIdentifier}`);
   }
 
   public fetchSparcUberonToClMappings(): Observable<any[]> {
     return this.http.get<any[]>(`${this.endpoint}/uberon-cl-links`);
   }
+
+  /*
+  public fetchAsctbCsv(file): Observable<any> {
+    // Create url
+    let url = `${this.endpoint}${"/asctb/UBERON:0000948?format=csv"}`;
+    var body = {};
+    return this.http.post(url, body, {
+      responseType: "blob",
+      headers: new HttpHeaders().append("Content-Type", "text/csv")
+    });
+  }*/
 }

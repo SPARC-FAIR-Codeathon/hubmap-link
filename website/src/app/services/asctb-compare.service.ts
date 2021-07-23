@@ -3,6 +3,7 @@ import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
 import { Organ } from 'src/app/interfaces/organ';
 import { CellType } from '../interfaces/cellType';
 import { ApiKeystoreService } from './api-keystore.service';
+import { forkJoin } from 'rxjs';
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -26,35 +27,34 @@ export class AsctbCompareService {
     {
       name:'Heart', 
       id:'UBERON:0000948', 
-      //sparcUri:'assets/data/sparc_heart.json', 
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1240281363'
     },{
       name:'Brain', 
       id:'UBERON:0000955', 
-      //sparcUri: 'assets/data/sparc_brain.json', 
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
     },{
       name:'Kidney', 
       id:'UBERON:0002113', 
-      //sparcUri:'assets/data/sparc_kidney.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1760639962'
     },{
       name:'Large intestine', 
       id:'UBERON:0000059', 
-      //sparcUri:'assets/data/sparc_large-intestine.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1687995716'
     },{
       name:'Lymph nodes', 
       id:'UBERON:0000029', 
-      //sparcUri:'assets/data/sparc_lymph-nodes.json',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/272157091'
     }
   ];
 
   //Organ hierarchial data
-  sparcRawOrganData = null;
-  hubmapRawOrganData = null;
+  sparcRawOrganData = null; //Unparsed scigraph neighbor query response
+  sparcRawUberonClData = null; //Unparsed scigraph cypher query response
+  hubmapRawOrganData = null; //Unparsed hubmap api response
   sparcTreeOrganData = null;
+
+  //Map of ontology id to cellType {<ontologyId:sting>:[<cellType1, cellType2, ...]} e.g {'UBERON:12345':[{id:'CL_56789', ...}, ...]}
+  sparcCellTypeEdges = {}; 
 
   //Synonym data in form {<synonym:string>:<id:string>}
   synonymIdx = null;
@@ -73,7 +73,7 @@ export class AsctbCompareService {
    *************************************************************************************/
   mergedOrganData: Organ = null;
   mergedOrganIdx: any = {}; //id:Organ index
-  mergedCellTypeIdx: any = {}; //id:CellType index
+  mergedCellTypeIdx: any = {}; //CellTypeid:CellType index
 
   /*************************************************************************************
    * Data structure suitable for table presentation
@@ -103,6 +103,7 @@ export class AsctbCompareService {
     //Reset the data references
     this.sparcRawOrganData = null;
     this.sparcTreeOrganData = null;
+    this.sparcRawUberonClData = null;
     this.hubmapRawOrganData = null;
     this.mergedOrganData = null;
     this.synonymIdx = null;
@@ -120,37 +121,20 @@ export class AsctbCompareService {
     //Update the data loading status
     this.dataLoadStatus = 'Loading';
 
-    //Fetch sparc data if a data uri is available
-    if(this.apiKeystoreService.sparcSciCrunchApiKey){
-      this.sparcAsctbAjaxService.fetchSparcPartonomy(selectedOrganObj.id, 'http://purl.obolibrary.org/obo/BFO_0000050', 10, this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
-        next: (response:any) => {
-          this.sparcRawOrganData = response;
-          // Reorganize raw response into tree format
-          this.sparcTreeOrganData = this.sciGraphQueryToTree(response, selectedOrganObj.id);
-          // Extract synonym index
-          this.synonymIdx = this.sciGraphQueryToSynonymIdx(response);
-          if(this.hubmapRawOrganData != null){
-            this.restructureRawOrganData(); // Execute merge only if hubmap data is also ready
-          }
-        },
-        error: (error) => { console.error(error); }
-      });
-    }
-    
-    //Fetch HuBMAP data if a data uri is available
-    if(selectedOrganObj.hubmapUri){
-      this.sparcAsctbAjaxService.fetchGenericJson(selectedOrganObj.hubmapUri).subscribe({
-        next: (response:any) => { 
-          this.hubmapRawOrganData = response;
-          if(this.sparcTreeOrganData != null){
-            this.restructureRawOrganData(); // Execute merge only if sparc data is also ready
-          }
-        },
-        error: (error) => { console.error(error); }
-      });
-    }
+    //Fetch all datasets and execute parse & merge operation when they arrive
+    forkJoin([
+      this.sparcAsctbAjaxService.fetchSparcPartonomy(selectedOrganObj.id),
+      this.sparcAsctbAjaxService.fetchSparcUberonToClMappings(),
+      this.sparcAsctbAjaxService.fetchGenericJson(selectedOrganObj.hubmapUri)
+    ]).subscribe(([sparcPartonomyResponse, sparcClMappingResponse, hubmapPartonomyResponse]) => {
+      this.sparcRawOrganData = sparcPartonomyResponse;
+      this.sparcTreeOrganData = this.sciGraphQueryToTree(sparcPartonomyResponse, this.selectedOrganType);
+      this.synonymIdx = this.sciGraphQueryToSynonymIdx(sparcPartonomyResponse);
+      this.hubmapRawOrganData = hubmapPartonomyResponse;
+      this.sparcRawUberonClData = sparcClMappingResponse;
+      this.restructureRawOrganData();
+    });
   }
-
 
   /*************************************************************************************
    * Restructure sparc, hubmap data into forms useful for presentation
@@ -186,7 +170,6 @@ export class AsctbCompareService {
    *************************************************************************************/
   private mergeRawOrganData(){
 
-
     /*************************************************************************************
      * Step 1: Initialize and index merged organ objects without edge data
      *************************************************************************************/
@@ -207,12 +190,10 @@ export class AsctbCompareService {
          * synonyms. If a term match is found, assign the associated ID. Otherwise, create a surrogate "smart" ID
         **************************************************************************************************************************/
 
-
         if(!organ.id || organ.id == ''){
           let nameMatchedId = this.synonymIdx[organ.name];
           if(nameMatchedId){
             organ.id = nameMatchedId;
-            console.log('matched by name: ' + organ.name + ', id' + organ.id);
           }else{
             organ.id = 'SURROGATE_ID:' + organ.name.toUpperCase();
           }
@@ -221,9 +202,40 @@ export class AsctbCompareService {
       });
     });
 
+
+    //Convert raw uberon celltype response (this.sparcRawUberonClData) to (this.sparcCellTypeEdges) {<ontologyId:sting>:[<cellType1, cellType2, ...]}
+    // Also add the CT object to mergedCellTypeIdx
+    this.sparcRawUberonClData.forEach(ct => {
+      let ctId = ct['cl.iri'].replace('http://purl.obolibrary.org/obo/','').replace('_',':');
+      let asId = ct['u.iri'].replace('http://purl.obolibrary.org/obo/','').replace('_',':');
+      if(!this.mergedCellTypeIdx[ctId]){
+        this.mergedCellTypeIdx[ctId] = this.initializeMergedCellType(ctId, ct['cl.label'], ct['cl.label'])
+      }
+      if(!this.sparcCellTypeEdges[asId]){
+        this.sparcCellTypeEdges[asId] = [this.mergedCellTypeIdx[ctId]];
+      }else if(this.sparcCellTypeEdges[asId].indexOf(this.mergedCellTypeIdx[ctId]) < 0){
+        this.sparcCellTypeEdges[asId].push(this.mergedCellTypeIdx[ctId]);
+      }
+    });
+
+    //@TODO: Remove after validated that sparc CTs are working end-to-end
+    console.log('raw ct');
+    console.dir(this.sparcRawUberonClData);
+    console.log('ct map by ctId');
+    console.dir(this.mergedCellTypeIdx);
+    console.log('ct[] map by asId');
+    console.dir(this.sparcCellTypeEdges);
+    
+
     //Iterate over sparc organs and initialize merged organ objects
     Object.values(sparcOrganIdx).forEach((sparcOrgan: any)=>{
       let mergedOrgan:Organ = this.initializeMergedOrgan(sparcOrgan.id, sparcOrgan.name, sparcOrgan.label, true, (sparcOrgan.id in hubmapOrganIdx));
+      //Look up and append the sparc cellTypes based on the organ id
+      if(this.sparcCellTypeEdges[sparcOrgan.id]){
+        this.sparcCellTypeEdges[sparcOrgan.id].forEach(ct => { 
+          mergedOrgan.ctSparcChildren.add(ct);
+        });
+      }
       this.mergedOrganIdx[mergedOrgan.id] = mergedOrgan;
     });
     //Iterate over hubmap organs and initialize any that do not already exist
@@ -248,7 +260,7 @@ export class AsctbCompareService {
       if(mergedOrgan.id in sparcOrganIdx){
         let sparcOrgan = sparcOrganIdx[mergedOrgan.id];
         if(sparcOrgan.children && sparcOrgan.children.length > 0){
-          sparcOrgan.children.forEach(childSparcOrgan => {
+          sparcOrgan.children.filter(c=>!!c).forEach(childSparcOrgan => {
             mergedOrgan.asSparcChildren.add(this.mergedOrganIdx[childSparcOrgan.id]);
           });
         }
@@ -290,29 +302,29 @@ export class AsctbCompareService {
 
       mergedOrgan.asAllChildren = new Set([...mergedOrgan.asHubmapChildren, ...mergedOrgan.asSparcChildren]);
       //Calculate intersection of the two sets and assign to sharedChildren
-      mergedOrgan.asSharedChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => mergedOrgan.asSparcChildren.has(x)))
+      mergedOrgan.asSharedChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => mergedOrgan.asSparcChildren.has(x)));
       //Calculate subtraction of sharedChildren from hubmapChildren 
-      mergedOrgan.asHubmapChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)))
+      mergedOrgan.asHubmapChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)));
       //Calculate subtraction of sharedChildren from sparcChildren 
-      mergedOrgan.asSparcChildren = new Set([...mergedOrgan.asSparcChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)))
+      mergedOrgan.asSparcChildren = new Set([...mergedOrgan.asSparcChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)));
 
-
-
-      //Object.values(this.mergedOrganIdx).forEach((mergedOrgan:Organ) =>{
-
-
-
-
-
+      
+      /*************************************************************************************
+      * Step 3B: Follow the same pattern to populate cell type sets
+      **************************************************************************************/
+      mergedOrgan.ctAllChildren = new Set([...mergedOrgan.ctHubmapChildren, ...mergedOrgan.ctSparcChildren]);
+      //Calculate intersection of the two sets and assign to sharedChildren
+      mergedOrgan.ctSharedChildren = new Set([...mergedOrgan.ctHubmapChildren].filter(x => mergedOrgan.ctSparcChildren.has(x)));
+      //Calculate subtraction of sharedChildren from hubmapChildren 
+      mergedOrgan.ctHubmapChildren = new Set([...mergedOrgan.ctHubmapChildren].filter(x => !mergedOrgan.ctSharedChildren.has(x)));
+      //Calculate subtraction of sharedChildren from sparcChildren 
+      mergedOrgan.ctSparcChildren = new Set([...mergedOrgan.ctSparcChildren].filter(x => !mergedOrgan.ctSharedChildren.has(x)));
 
 
       //Update summary statistics
       this.countSparcASLinks += mergedOrgan.asSparcChildren.size;
       this.countHubmapASLinks += mergedOrgan.asHubmapChildren.size;
       this.countSharedASLinks += mergedOrgan.asSharedChildren.size;
-
-      //TODO: construct cell-type sets
-      //console.dir(mergedOrgan.asSparcChildren);
     });
 
     /*************************************************************************************
@@ -321,10 +333,6 @@ export class AsctbCompareService {
      *************************************************************************************/
     this.augmentMergedOrganNode(this.mergedOrganData, null, new Set<Organ>());
 
-    //How many nodes have multiple parents?
-    let multiParentArr = Object.values(this.mergedOrganIdx).filter((organ: Organ)=>{
-      return organ.asParents.size > 1;
-    })
     this.countTotalAS = Object.keys(this.mergedOrganIdx).length;
     this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;
     this.countHubmapAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => !organ.sparcResident && organ.hubmapResident).length;
@@ -344,9 +352,10 @@ export class AsctbCompareService {
         id: organ.id,
         name: organ.name,
         label: organ.label,
-        sharedCellTypes: [],
+        allCellTypes: Array.from(organ.ctAllChildren),
+        sharedCellTypes: Array.from(organ.ctSharedChildren),
         hubmapCellTypes: Array.from(organ.ctHubmapChildren),
-        sparcCellTypes: [],
+        sparcCellTypes: Array.from(organ.ctSparcChildren),
         sparcResident: organ.sparcResident,
         hubmapResident: organ.hubmapResident
       });
@@ -376,11 +385,13 @@ export class AsctbCompareService {
    * Depth-first walk of sparc organ tree datastructure to construct an id:organ index
    *************************************************************************************/
   private indexSparcOrganTree(idx, node){
-    idx[node.id] = node;
-    if(node.children && node.children.length > 0){
-      node.children.forEach(organ => {
-        this.indexSparcOrganTree(idx, organ);
-      });
+    if(node.id.indexOf('CL:') < 0){ //Do not traverse any celltype nodes that are encountered
+      idx[node.id] = node;
+      if(node.children && node.children.length > 0){
+        node.children.filter(o=>!!o).forEach(organ => {
+          this.indexSparcOrganTree(idx, organ);
+        });
+      }
     }
   }
 
@@ -416,7 +427,6 @@ export class AsctbCompareService {
     });
   }
 
-
   /*************************************************************************************
    * Utility function to restructure a raw SciGraph neighbor query response into a
    * tree structure. Returns the root node of the tree
@@ -431,7 +441,7 @@ export class AsctbCompareService {
   private sciGraphQueryToTree(scigraphRawData:any, organId:string): any{
     let nodeList = []
     let nodeIdx = {}
-    scigraphRawData['nodes'].forEach(node => {
+    scigraphRawData['nodes'].filter((node)=>(node.id.indexOf('CL:') < 0)).forEach(node => {
       let abbreviatedNode = {'name':node['lbl'], 'label': node['lbl'], 'id': node['id']}
       nodeList.push(abbreviatedNode)
       nodeIdx[node['id']] = abbreviatedNode
@@ -440,7 +450,7 @@ export class AsctbCompareService {
     //Index terms by edge "object" ID to facilitate ancestry resolution
     let objEdgeIdx = {} //Index to look up children from a term id
     let subEdgeIdx = {} //Index to look up parent from a term id
-    scigraphRawData['edges'].forEach(edge => {
+    scigraphRawData['edges'].filter((edge)=>(edge['obj'].indexOf('CL:') < 0)).forEach(edge => {
       objEdgeIdx[edge['obj']] = objEdgeIdx[edge['obj']] || []; //Initialize array if not already
       objEdgeIdx[edge['obj']].push(nodeIdx[edge['sub']]);
       subEdgeIdx[edge['sub']] = nodeIdx[edge['obj']];
@@ -493,6 +503,7 @@ export class AsctbCompareService {
       asSparcChildren: new Set(),
       asHubmapChildren: new Set(),
       asSharedChildren: new Set(),
+      ctAllChildren: new Set(),
       ctSparcChildren: new Set(),
       ctHubmapChildren: new Set(),
       ctSharedChildren: new Set()

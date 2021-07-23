@@ -5,6 +5,10 @@
 .w-m75{ min-width: 75px;}
 .background-sparc{ background-color:rgb(69, 59, 134); }
 .background-hubmap{ background-color:rgb(144, 158, 121); }
+.background-shared{ 
+    background-color: #ccc; 
+    border: 3px solid steelblue;
+}
 .color-green{color:green;}
 .color-maroon{color:rgb(156, 3, 3);}
 .font-size-32{ font-size:32px;}

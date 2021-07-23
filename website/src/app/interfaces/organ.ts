@@ -28,10 +28,12 @@ export interface Organ {
     //Organs with a PART_OF relationship on this organ in Sparc and Hubmap
     asSharedChildren: Set<Organ>;
 
-    //CellTypes with a PART_OF relationship on this organ in Sparc only
+    //CellTypes with a PART_OF/subClassOf/BFO_0000051/etc. relationship on this organ
+    ctAllChildren: Set<CellType>;
+    //CellTypes with a PART_OF/subClassOf/BFO_0000051/etc. relationship on this organ in Sparc only
     ctSparcChildren: Set<CellType>;
-    //CellTypes with a PART_OF relationship on this organ in Hubmap only
+    //CellTypes with a PART_OF/subClassOf/BFO_0000051/etc. relationship on this organ in Hubmap only
     ctHubmapChildren: Set<CellType>;
-    //CellTypes with a PART_OF relationship on this organ in Sparc and Hubmap
+    //CellTypes with a PART_OF/subClassOf/BFO_0000051/etc. relationship on this organ in Sparc and Hubmap
     ctSharedChildren: Set<CellType>;
 }

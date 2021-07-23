@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
 import { ApiKeystoreService } from './api-keystore.service';
 
+/**************************************************************************************************
+ * @deprecated ASCT+B generation facilties have been moved to the proxy server
+ **************************************************************************************************/
 @Injectable({
   providedIn: 'root'
 })
@@ -11,12 +14,13 @@ export class AsctbGenerateService {
     private apiKeystoreService: ApiKeystoreService) { }
 
   /*************************************************************************************************
-   * Execute a request against SPARC scigraph for all neighbors across PART_OF relationships
-   * @return promise
+   * @Author Samuel O'Blenes
+   * @Date 7/23/21
+   * Generate a ASCT+B CSV file from SPARC scigraph response
    *************************************************************************************************/
   public generateAsctbDataForExport(organIdentifier:string, callback:Function){
     if(organIdentifier){
-      return this.sparcAsctbAjaxService.fetchSparcPartonomy(organIdentifier, 'http://purl.obolibrary.org/obo/BFO_0000050', 10, this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
+      return this.sparcAsctbAjaxService.fetchSparcPartonomy(organIdentifier).subscribe({
         next: (response:any) => {
           let csvStr = this.parseSparcNeighborResponseToAsctbCsv(response, organIdentifier);
           callback((organIdentifier + '_SPARC_ASCTB.csv'), csvStr);
@@ -53,7 +57,7 @@ export class AsctbGenerateService {
     }
 
     // Iterate over all terms and generate their ancestry list
-    // Append root node to the end of the list, then reverse it so that ancestors appear first
+    // Then reverse it so that ancestors appear first
     let allAncestryList = []
     nodeList.forEach((node)=>{
         let nodeAncestryList = []
@@ -73,7 +77,7 @@ export class AsctbGenerateService {
     let columnNames = columnNamesArr.join(',');
 
     // Convert node objects to array representations for CSV export
-    //Convert 2d array of object to 1d array of comma separated string
+    // Convert 2d array of object to 1d array of comma separated string
     let dataCsvArr = [];
     allAncestryList.forEach((row)=>{
       let pad = ((max_depth - row.length) * 3) + 1;
@@ -82,7 +86,7 @@ export class AsctbGenerateService {
       })).join(',') + Array(pad).join(",") );
     });
 
-    //Generate header rows
+    // Generate header rows
     let headerArr = [];
     headerArr.push('Anatomical Strucures, Cell Types and Biomarkers Table for ' + nodeIdx[organIdentifier].name + ' v1.0' + Array(max_depth*3-1).join(","));
     headerArr.push(Array(max_depth*3).join(","));
