@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiKeystoreService } from '../api-keystore.service';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -12,32 +14,22 @@ import { ApiKeystoreService } from '../api-keystore.service';
   providedIn: 'root'
 })
 export class SparcAsctbAjaxService {
+  endpoint = environment.apiEndpoint;
+
   constructor(private http: HttpClient) { }
 
   /**********************************************************************
    * Returns a promise on the ajax call response
    **********************************************************************/
-  public fetchGenericJson(uri: string) {
-    return this.http.get(uri, {responseType: 'json'});
+  public fetchGenericJson<T = any>(uri: string): Observable<T> {
+    return this.http.get<T>(uri, {responseType: 'json'});
   }
 
+  public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.endpoint}/as-graph/${organIdentifier}`);
+  }
 
-  /***************************************************************************************************
-   * Execute a request against scigraph for partonomy data in relationship to the provided identifier
-   * Returns a promise on the ajax call response 
-   * relationshipType: http://purl.obolibrary.org/obo/BFO_0000050
-   ***************************************************************************************************/
-   public fetchSparcPartonomy(organIdentifier: string, relationshipType: string, depth:number, apiKey: string) {
-    let uri = 'https://scicrunch.org/api/1/scigraph/graph/neighbors/'
-      + organIdentifier
-      + '?depth=' 
-      + depth 
-      + '&blankNodes=false&relationshipType='
-      + relationshipType
-      + '&direction=INCOMING&entail=false&'
-      + 'key=' + apiKey;
-    return this.http.get(uri, {responseType: 'json'});
+  public fetchSparcUberonToClMappings(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.endpoint}/uberon-cl-links`);
   }
 }
-
-
