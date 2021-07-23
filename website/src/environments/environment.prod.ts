@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiEndpoint: 'https://hubmap-link.herokuapps.io'
+  apiEndpoint: 'https://hubmap-link-api.herokuapp.com'
 };
