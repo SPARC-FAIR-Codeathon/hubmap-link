@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SPARC & HuBMAP Linkages in the CCF-EUI</title>
+  <base href="https://cdn.jsdelivr.net/gh/hubmapconsortium/ccf-ui@gh-pages/">
+  <script>
+    window.dbOptions = {
+      hubmapDataService: 'search-api',
+      dataSources: [
+        'https://hubmap-link-api.herokuapp.com/sparc-datasets?format=jsonld',
+        'https://hubmap-link-api.herokuapp.com/hubmap-datasets?format=jsonld'
+      ],
+      hubmapPortalUrl: 'https://portal.hubmapconsortium.org/',
+      hubmapDataUrl: '',
+      hubmapAssetsUrl: 'https://assets.hubmapconsortium.org',
+      hubmapToken: ''
+    };
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <script src="wc.js" async></script>
+</head>
+<body class="mat-typography">
+  <ccf-eui></ccf-eui>
+</body>
+</html>
