@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
-import { ApiKeystoreService } from './api-keystore.service';
+
 
 /**************************************************************************************************
  * @deprecated ASCT+B generation facilties have been moved to the proxy server
@@ -10,8 +10,7 @@ import { ApiKeystoreService } from './api-keystore.service';
 })
 export class AsctbGenerateService {
 
-  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService,
-    private apiKeystoreService: ApiKeystoreService) { }
+  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService) { }
 
   /*************************************************************************************************
    * @Author Samuel O'Blenes
@@ -38,7 +37,7 @@ export class AsctbGenerateService {
       nodeList.push(abbreviatedNode)
       nodeIdx[node['id']] = abbreviatedNode
     });
-        
+
     //Index terms by edge "object" ID to facilitate ancestry resolution
     let objEdgeIdx = {} //Index to look up children from a term id
     let subEdgeIdx = {} //Index to look up parent from a term id

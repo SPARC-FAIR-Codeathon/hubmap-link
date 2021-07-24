@@ -18,9 +18,6 @@ export class SparcAsctbAjaxService {
 
   constructor(private http: HttpClient) { }
 
-  /**********************************************************************
-   * Returns a promise on the ajax call response
-   **********************************************************************/
   public fetchGenericJson<T = any>(uri: string): Observable<T> {
     return this.http.get<T>(uri, {responseType: 'json'});
   }
@@ -32,15 +29,4 @@ export class SparcAsctbAjaxService {
   public fetchSparcUberonToClMappings(): Observable<any[]> {
     return this.http.get<any[]>(`${this.endpoint}/uberon-cl-links`);
   }
-
-  /*
-  public fetchAsctbCsv(file): Observable<any> {
-    // Create url
-    let url = `${this.endpoint}${"/asctb/UBERON:0000948?format=csv"}`;
-    var body = {};
-    return this.http.post(url, body, {
-      responseType: "blob",
-      headers: new HttpHeaders().append("Content-Type", "text/csv")
-    });
-  }*/
 }

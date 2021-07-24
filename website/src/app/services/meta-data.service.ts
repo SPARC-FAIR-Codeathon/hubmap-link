@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ORGAN_TYPES } from '../common/global-constants';
 import { Dataset } from '../interfaces/dataset';
 import { MetaDataAjaxService } from './ajax/meta-data-ajax.service';
-import { ApiKeystoreService } from './api-keystore.service';
-import { ORGAN_TYPES } from '../common/global-constants';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetaDataService {
 
-  constructor(private metaDataAjaxService: MetaDataAjaxService,
-    private apiKeystoreService: ApiKeystoreService) { }
+  constructor(private metaDataAjaxService: MetaDataAjaxService) { }
 
   public datasetArr:Dataset[] = [];
 

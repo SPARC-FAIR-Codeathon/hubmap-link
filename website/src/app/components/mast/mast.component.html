@@ -2,7 +2,7 @@
     <mat-toolbar>
         <span>HuBMAP & SPARC Linkages</span>
 
-        <div *ngIf="apiKeystoreService.sparcSciCrunchApiKey">
+        <div>
             <button mat-raised-button class="margin-left-100" [ngClass]="{'selected': router.url === '/asctb-compare' || router.url === '/'}" routerLink="asctb-compare">
                 <mat-icon>collections_bookmark</mat-icon>
                 Partonomy Comparison

@@ -4,10 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 
-/* Directives */
-
-//import { VegaliteDirective } from './directives/vegalite.directive';
-
 /* Material components */
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -53,7 +49,7 @@ import { AsctbTreemapViewComponent } from './components/asctb-compare/asctb-tree
 import { ColorLegendComponent } from './components/asctb-compare/color-legend/color-legend.component';
 import { AsctbGenerateComponent } from './components/asctb-generate/asctb-generate.component';
 import { DatasetLinkagesComponent } from './components/dataset-linkages/dataset-linkages.component';
-import { ApiKeyComponent } from './components/api-key/api-key.component';
+
 
 @NgModule({
   declarations: [
@@ -67,8 +63,7 @@ import { ApiKeyComponent } from './components/api-key/api-key.component';
     AsctbTreemapViewComponent,
     ColorLegendComponent,
     AsctbGenerateComponent,
-    DatasetLinkagesComponent,
-    ApiKeyComponent
+    DatasetLinkagesComponent
   ],
   imports: [
     BrowserModule,

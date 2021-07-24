@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
+import { forkJoin } from 'rxjs';
 import { Organ } from 'src/app/interfaces/organ';
 import { CellType } from '../interfaces/cellType';
-import { ApiKeystoreService } from './api-keystore.service';
-import { forkJoin } from 'rxjs';
+import { SparcAsctbAjaxService } from './ajax/sparc-asctb-ajax.service';
+
 
 /*******************************************************************************************
  * @Author Samuel O'Blenes
@@ -25,24 +25,24 @@ export class AsctbCompareService {
   //Selectable organ types in the UI control (@TODO: Externalize this to a resource file)
   organTypes = [
     {
-      name:'Heart', 
-      id:'UBERON:0000948', 
+      name:'Heart',
+      id:'UBERON:0000948',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1240281363'
     },{
-      name:'Brain', 
-      id:'UBERON:0000955', 
+      name:'Brain',
+      id:'UBERON:0000955',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/345174398'
     },{
-      name:'Kidney', 
-      id:'UBERON:0002113', 
+      name:'Kidney',
+      id:'UBERON:0002113',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1760639962'
     },{
-      name:'Large intestine', 
-      id:'UBERON:0000059', 
+      name:'Large intestine',
+      id:'UBERON:0000059',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/1687995716'
     },{
-      name:'Lymph nodes', 
-      id:'UBERON:0000029', 
+      name:'Lymph nodes',
+      id:'UBERON:0000029',
       hubmapUri:'https://asctb-api.herokuapp.com/v2/1tK916JyG5ZSXW_cXfsyZnzXfjyoN-8B2GXLbYD6_vF0/272157091'
     }
   ];
@@ -54,7 +54,7 @@ export class AsctbCompareService {
   sparcTreeOrganData = null;
 
   //Map of ontology id to cellType {<ontologyId:sting>:[<cellType1, cellType2, ...]} e.g {'UBERON:12345':[{id:'CL_56789', ...}, ...]}
-  sparcCellTypeEdges = {}; 
+  sparcCellTypeEdges = {};
 
   //Synonym data in form {<synonym:string>:<id:string>}
   synonymIdx = null;
@@ -89,8 +89,7 @@ export class AsctbCompareService {
   fdNodes = []; // {id: "UBERON:00012345", group: 1, organ:{...}}
   fdEdges = []; // {source: "UBERON:00012345", target: "UBERON:00012346", value: 1}
 
-  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService,
-    private apiKeystoreService: ApiKeystoreService) {}
+  constructor(private sparcAsctbAjaxService: SparcAsctbAjaxService) {}
 
   /*************************************************************************************
    * Fetch data for the selected organ from SPARC and HuBMAP. After data has been
@@ -253,7 +252,7 @@ export class AsctbCompareService {
       let mergedOrgan:Organ = this.initializeMergedOrgan(sparcOrgan.id, sparcOrgan.name, sparcOrgan.label, true, (sparcOrgan.id in hubmapOrganIdx));
       //Look up and append the sparc cellTypes based on the organ id
       if(this.sparcCellTypeEdges[sparcOrgan.id]){
-        this.sparcCellTypeEdges[sparcOrgan.id].forEach(ct => { 
+        this.sparcCellTypeEdges[sparcOrgan.id].forEach(ct => {
           mergedOrgan.ctSparcChildren.add(ct);
         });
       }
@@ -304,8 +303,8 @@ export class AsctbCompareService {
               //Pull the celltype reference from the index if it exists, otherwise initialize it
               //Assign a surrogate id if it is missing
               let ctId = hubmapCt.id || 'SURROGATE_ID:'+hubmapCt.name;
-              let cellType:CellType = (ctId in this.mergedCellTypeIdx) ? 
-                this.mergedCellTypeIdx[ctId] : 
+              let cellType:CellType = (ctId in this.mergedCellTypeIdx) ?
+                this.mergedCellTypeIdx[ctId] :
                 this.initializeMergedCellType(ctId, hubmapCt.name, hubmapCt.rfs_label);
                 this.mergedCellTypeIdx[ctId] = cellType;
                 mergedOrgan.ctHubmapChildren.add(cellType);
@@ -313,32 +312,32 @@ export class AsctbCompareService {
           }
         }
       });
-      
+
       /*************************************************************************************
-      * Step 3:At this point, asHubmapChildren and asSparcChildren are now populated with 
-      * the respective children of the two datasets. However, we need to populate 
-      * asSharedChildren with the intersection of these two sets, and subtract shared 
+      * Step 3:At this point, asHubmapChildren and asSparcChildren are now populated with
+      * the respective children of the two datasets. However, we need to populate
+      * asSharedChildren with the intersection of these two sets, and subtract shared
       * children from each of the source-specific sets.
       **************************************************************************************/
 
       mergedOrgan.asAllChildren = new Set([...mergedOrgan.asHubmapChildren, ...mergedOrgan.asSparcChildren]);
       //Calculate intersection of the two sets and assign to sharedChildren
       mergedOrgan.asSharedChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => mergedOrgan.asSparcChildren.has(x)));
-      //Calculate subtraction of sharedChildren from hubmapChildren 
+      //Calculate subtraction of sharedChildren from hubmapChildren
       mergedOrgan.asHubmapChildren = new Set([...mergedOrgan.asHubmapChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)));
-      //Calculate subtraction of sharedChildren from sparcChildren 
+      //Calculate subtraction of sharedChildren from sparcChildren
       mergedOrgan.asSparcChildren = new Set([...mergedOrgan.asSparcChildren].filter(x => !mergedOrgan.asSharedChildren.has(x)));
 
-      
+
       /*************************************************************************************
       * Step 3B: Follow the same pattern to populate cell type sets
       **************************************************************************************/
       mergedOrgan.ctAllChildren = new Set([...mergedOrgan.ctHubmapChildren, ...mergedOrgan.ctSparcChildren]);
       //Calculate intersection of the two sets and assign to sharedChildren
       mergedOrgan.ctSharedChildren = new Set([...mergedOrgan.ctHubmapChildren].filter(x => mergedOrgan.ctSparcChildren.has(x)));
-      //Calculate subtraction of sharedChildren from hubmapChildren 
+      //Calculate subtraction of sharedChildren from hubmapChildren
       mergedOrgan.ctHubmapChildren = new Set([...mergedOrgan.ctHubmapChildren].filter(x => !mergedOrgan.ctSharedChildren.has(x)));
-      //Calculate subtraction of sharedChildren from sparcChildren 
+      //Calculate subtraction of sharedChildren from sparcChildren
       mergedOrgan.ctSparcChildren = new Set([...mergedOrgan.ctSparcChildren].filter(x => !mergedOrgan.ctSharedChildren.has(x)));
 
 
@@ -349,7 +348,7 @@ export class AsctbCompareService {
     });
 
     /*************************************************************************************
-     * Step 4: Walk the merged organ tree and populate maxDepth, parents, 
+     * Step 4: Walk the merged organ tree and populate maxDepth, parents,
      * asAcyclicalChildren
      *************************************************************************************/
     this.augmentMergedOrganNode(this.mergedOrganData, null, new Set<Organ>());
@@ -360,7 +359,7 @@ export class AsctbCompareService {
     this.countSharedAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && organ.hubmapResident).length;
 
     this.countTotalCT = Object.keys(this.mergedCellTypeIdx).length;
-    
+
   }
 
   /*************************************************************************************
@@ -426,7 +425,7 @@ export class AsctbCompareService {
   private augmentMergedOrganNode(node: Organ, parent: Organ, visitedSet: Set<Organ>){
     visitedSet.add(node); //Add this node to the visited set so that we do not revisit
     if(parent){
-      
+
       //Find parent with maximum depth. Add as child of that parent. Remove from children of other parents
       let deepestParent = Array.from(node.asParents).reduce(function(prev, current) {
           return (prev.maxDepth > current.maxDepth) ? prev : current
@@ -470,7 +469,7 @@ export class AsctbCompareService {
       nodeList.push(abbreviatedNode)
       nodeIdx[node['id']] = abbreviatedNode
     });
-        
+
     //Index terms by edge "object" ID to facilitate ancestry resolution
     let objEdgeIdx = {} //Index to look up children from a term id
     let subEdgeIdx = {} //Index to look up parent from a term id
@@ -488,8 +487,8 @@ export class AsctbCompareService {
 
   /*************************************************************************************
    * Utility function to extract synonym string associations with ontology IDs
-   * @Return Example: 
-   * { 
+   * @Return Example:
+   * {
    *  "atrial auricle" : "UBERON:0006618",
    *  "atrium appendage" : "UBERON:0006618",
    *  "auricula atrii" : "UBERON:0006618",
