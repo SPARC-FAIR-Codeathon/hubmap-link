@@ -218,14 +218,29 @@ export class AsctbCompareService {
       }
     });
 
-    //@TODO: Remove after validated that sparc CTs are working end-to-end
+    //Some additional CT -> AS relationships get mapped by the node traversal query
+    this.sparcRawOrganData.edges.filter(edge=>{
+      return edge.sub.includes('CL:');
+    }).forEach(edge => {
+      if(!this.mergedCellTypeIdx[edge.sub]){
+        const asNode = this.sparcRawOrganData.nodes.find(node=>node.id === edge.sub);
+        this.mergedCellTypeIdx[edge.sub] = this.initializeMergedCellType(edge.sub, asNode.lbl, asNode.lbl);
+      }
+      if(!this.sparcCellTypeEdges[edge.obj]){
+        this.sparcCellTypeEdges[edge.obj] = [this.mergedCellTypeIdx[edge.sub]];
+      }else if(this.sparcCellTypeEdges[edge.obj].indexOf(this.mergedCellTypeIdx[edge.sub]) < 0){
+        this.sparcCellTypeEdges[edge.obj].push(this.mergedCellTypeIdx[edge.sub]);
+      }
+    });
+
+    /*
     console.log('raw ct');
     console.dir(this.sparcRawUberonClData);
     console.log('ct map by ctId');
     console.dir(this.mergedCellTypeIdx);
     console.log('ct[] map by asId');
     console.dir(this.sparcCellTypeEdges);
-    
+    */
 
     //Iterate over sparc organs and initialize merged organ objects
     Object.values(sparcOrganIdx).forEach((sparcOrgan: any)=>{
