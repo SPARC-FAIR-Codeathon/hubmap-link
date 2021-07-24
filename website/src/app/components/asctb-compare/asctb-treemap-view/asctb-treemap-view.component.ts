@@ -44,7 +44,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
 
     d3.selectAll("#treemap-div > *").remove();
     var svg = d3.select("#treemap-div").append("svg")
-        .attr("width", width + margin.right + margin.left)
+        .attr("width", width + margin.right + margin.left + 1000)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate("
