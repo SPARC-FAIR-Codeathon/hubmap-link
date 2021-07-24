@@ -2,7 +2,8 @@ import { fetchHuBMAPElasticSearch } from './fetch-elastic-search';
 import { hubmapResponseAsJsonLd } from './hubmap-data';
 
 
-export async function fetchHuBMAPData(debug = true): Promise<any> {
+export async function fetchHuBMAPData(format: string): Promise<any> {
+  const debug = format && format.includes('debug');
   const esData = await fetchHuBMAPElasticSearch({
     _source: {
       excludes: [
@@ -16,5 +17,9 @@ export async function fetchHuBMAPData(debug = true): Promise<any> {
     post_filter: debug ? { term: { 'entity_type.keyword': 'Sample' } } : undefined,
     query: !debug ? { exists: { field: 'rui_location' } } : undefined
   }, 10000);
-  return hubmapResponseAsJsonLd(esData, 'https://assets.hubmapconsortium.org', 'https://portal.hubmapconsortium.org/', undefined, debug);
+  if (format === 'jsonld' || format === 'jsonld-debug') {
+    return hubmapResponseAsJsonLd(esData, 'https://assets.hubmapconsortium.org', 'https://portal.hubmapconsortium.org/', undefined, debug);
+  } else {
+    return esData;
+  }
 }

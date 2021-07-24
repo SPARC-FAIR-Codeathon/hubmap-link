@@ -29,7 +29,7 @@ export class MetaDataService {
     });
 
     //Fetch Sparc metadata
-    this.metaDataAjaxService.fetchSparcMetadata(this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
+    this.metaDataAjaxService.fetchSparcMetadata().subscribe({
       next: (response:any) => {
         console.dir(response);
         this.restructureSparcMetadata(response);
@@ -44,7 +44,7 @@ export class MetaDataService {
   private restructureSparcMetadata(sMetadata:any){
     sMetadata.hits.hits.forEach(smd => {
       let record = this.initializeDatasetRecord('SPARC');
-      
+
       record.name = smd._source?.item?.name;
       record.description = smd._source?.item?.description;
       if(smd._source?.anatomy?.organ){
