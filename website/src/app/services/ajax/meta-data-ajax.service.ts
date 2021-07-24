@@ -13,7 +13,7 @@ export class MetaDataAjaxService {
   constructor(private http: HttpClient) { }
 
    public fetchSparcMetadata(): Observable<any> {
-    return this.http.get(`${this.endpoint}/sparc-datasets?format=json`);
+    return this.http.get(`${this.endpoint}/sparc-datasets?format=json-metadata`);
   }
 
    public fetchHubmapMetadata(): Observable<any> {
