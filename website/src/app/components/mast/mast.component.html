@@ -17,13 +17,14 @@
             </a>
             <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
                 <mat-icon>file_download</mat-icon>
-                ASCT+B File Export
+                ASCT+B Table Export
             </button>
         </div>
 
         <span fxFlex></span>
-            <button mat-mini-fab aria-label="Change API key" matTooltip="Change API key"  routerLink=""  *ngIf="apiKeystoreService.sparcSciCrunchApiKey" (click)="clearKey()">
-                <mat-icon>lock_open</mat-icon>
-            </button>
+
+        <a mat-mini-fab aria-label="GitHub repository and documentation" matTooltip="GitHub repository and documentation" href="https://github.com/SPARC-FAIR-Codeathon/hubmap-link">
+            <mat-icon>info_outline</mat-icon>
+        </a>
     </mat-toolbar>
 </div>
