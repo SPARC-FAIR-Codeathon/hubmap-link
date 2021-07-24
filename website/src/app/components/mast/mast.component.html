@@ -11,12 +11,14 @@
                 <mat-icon>table_view</mat-icon>
                 Dataset Linkage
             </button>
+            <a mat-raised-button class="margin-left-15" href="assets/ccf-eui.html" rel="noreferrer noopener" target="_blank">
+              <mat-icon>preview</mat-icon>
+              View Datasets in EUI
+            </a>
             <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
                 <mat-icon>file_download</mat-icon>
                 ASCT+B File Export
             </button>
-
-
         </div>
 
         <span fxFlex></span>
