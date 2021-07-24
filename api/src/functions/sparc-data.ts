@@ -1,8 +1,8 @@
-import { get, random } from 'lodash';
-import { ENTITY_CONTEXT, JsonDict, JsonLd, JsonLdObj, RUI_ORGANS } from './hubmap-data';
+import { get, random, uniq } from 'lodash';
+import { ENTITY_CONTEXT, JsonDict, JsonLdObj, RUI_ORGANS } from './hubmap-data';
 
 
-export function sparcResponseAsJsonLd(data: unknown, debug = true): JsonLd {
+export function sparcResponseAsJsonLd(data: unknown, debug = true): JsonLdObj {
   const entries = (get(data, 'hits.hits', []) as JsonDict[])
     .map(e => get(e, '_source', {}) as JsonDict);
 
@@ -16,6 +16,7 @@ export class SparcTissueBlock {
   sample: JsonLdObj;
   ruiLocation: JsonLdObj;
   datasets: JsonLdObj[];
+  meta: Record<string, any>;
 
   '@id': string;
   creatorFirstName: string;
@@ -35,10 +36,40 @@ export class SparcTissueBlock {
     this.creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
     this.dateCreated = data.dates.created.timestamp.split('T')[0];
 
+    this.meta = this.getMetadata(data);
     this.donor = this.getDonor(data);
     this.sample = this.getSample(data);
     this.ruiLocation = this.getRuiLocation(data);
     this.datasets = this.getDatasets(data);
+  }
+
+  getMetadata(data: JsonDict): Record<string, any> {
+    const organs: any[] = [
+      ...get(data, 'anatomy.scaffold', []),
+      ...get(data, 'anatomy.organ', [])
+    ];
+
+    const anatomicalStructures: any[] = [
+      ...get(data, 'anatomy.scaffold', []),
+      ...get(data, 'anatomy.organ', []),
+      ...get(data, 'anatomy.sampleSpecimenLocation', [])
+    ];
+
+    data.extra = {
+      organs, anatomicalStructures
+    }
+
+    return {
+      name: get(data, 'item.name'),
+      description: get(data, 'item.description'),
+      anatomicalStructureId: uniq(anatomicalStructures.map(t => t.curie).filter(o => !!o)),
+      anatomicalStructureName: uniq(anatomicalStructures.map(t => t.name?.toLowerCase()).filter(o => !!o)),
+      dataType: get(data, 'item.types', []).map((t: any) => t.name).join(', ') || undefined,
+      publicationStatus: get(data, 'item.published.status'),
+      externalLink: this['@id'],
+      groupName: get(data, 'pennsieve.organization.name'),
+      consortium: 'SPARC'
+    }
   }
 
   getDatasets(data: JsonDict): JsonLdObj[] {
@@ -160,7 +191,8 @@ export class SparcTissueBlock {
         rui_location: this.ruiLocation,
         datasets: this.datasets
       }],
-      data: debug ? this.data : undefined
+      data: debug ? this.data : undefined,
+      meta: debug ? this.meta : undefined
     };
   }
 }
