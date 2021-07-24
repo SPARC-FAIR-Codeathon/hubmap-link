@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 import { setupAsGraphRoute } from './routes/as-graph';
 import { setupAsctbCsvRoute } from './routes/asctb-csv';
-import { setupHuBMAPDatasetsRoute } from './routes/hubmap-data';
+import { setupHuBMAPDatasetsRoute } from './routes/hubmap-datasets';
 import { setupSparcDatasetsRoute } from './routes/sparc-datasets';
 import { setupUberonClLinkRoute } from './routes/uberon-cl-links-route';
 import { routeCache } from './utils/route-caching';

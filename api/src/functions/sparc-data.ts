@@ -1,5 +1,5 @@
-import { get } from 'lodash';
-import { ENTITY_CONTEXT, JsonDict, JsonLd, JsonLdObj } from './hubmap-data';
+import { get, random } from 'lodash';
+import { ENTITY_CONTEXT, JsonDict, JsonLd, JsonLdObj, RUI_ORGANS } from './hubmap-data';
 
 
 export function sparcResponseAsJsonLd(data: unknown, debug = true): JsonLd {
@@ -18,9 +18,23 @@ export class SparcTissueBlock {
   datasets: JsonLdObj[];
 
   '@id': string;
+  creatorFirstName: string;
+  creatorLastName: string;
+  creator: string;
+  dateCreated: string;
+  dataUpdated: string;
+  age: string;
+  sex: string;
+  groupName: string;
+  groupId: string;
 
   constructor(public data: JsonDict) {
     this['@id'] = data.item.curie.replace('DOI:', 'https://dx.doi.org/');
+    this.creatorFirstName = get(data, 'pennsieve.owner.first.name');
+    this.creatorLastName = get(data, 'pennsieve.owner.last.name');
+    this.creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
+    this.dateCreated = data.dates.created.timestamp.split('T')[0];
+
     this.donor = this.getDonor(data);
     this.sample = this.getSample(data);
     this.ruiLocation = this.getRuiLocation(data);
@@ -53,8 +67,8 @@ export class SparcTissueBlock {
     const groupName = get(data, 'pennsieve.organization.name');
     const creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
     const specimenType = get(data, 'anatomy.specimenType[0].name');
-    const sectionCount = get(data, 'item.statistics.samples.count', '0') + ' Samples';
-    const description = [specimenType, sectionCount].filter(s => !!s).join(', ');
+    const sectionCount = get(data, 'item.statistics.samples.count', '0');
+    const description = [specimenType, sectionCount + ' Samples'].filter(s => !!s).join(', ');
   
     return {
       '@type': 'Sample',
@@ -65,7 +79,7 @@ export class SparcTissueBlock {
       label: `Registered ${dateEntered}, ${creator}, ${groupName}`,
       sections: [],
       datasets: [],
-      section_count: sectionCount,
+      section_count: parseInt(sectionCount, 10),
       sections_size: 0,
       section_units: 'millimeter',
       description
@@ -76,12 +90,13 @@ export class SparcTissueBlock {
     const creator_first_name = get(data, 'pennsieve.owner.first.name');
     const creator_last_name = get(data, 'pennsieve.owner.last.name');
     const creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
+    const ontologyTerms = [RUI_ORGANS.body, RUI_ORGANS.skin];
 
     return {
       '@context': 'https://hubmapconsortium.github.io/hubmap-ontology/ccf-context.jsonld',
       '@id': `${this['@id']}#SampleLocation`,
       '@type': 'SpatialEntity',
-      ccf_annotations: [],
+      ccf_annotations: ontologyTerms,
       creation_date: data.dates.created.timestamp,
       creator,
       creator_first_name,
@@ -91,16 +106,16 @@ export class SparcTissueBlock {
       placement: {
         '@context': 'https://hubmapconsortium.github.io/hubmap-ontology/ccf-context.jsonld',
         '@id': `${this['@id']}#SampleLocationPlacement`,
-        '@type': 'SpatialEntity',
-        target: 'http://purl.org/ccf/latest/ccf.owl#VHXXX',
-        creation_date: data.dates.created.timestamp,
+        '@type': 'SpatialPlacement',
+        target: 'http://purl.org/ccf/latest/ccf.owl#VHMSkin',
+        placement_date: data.dates.created.timestamp,
         x_rotation: 0, y_rotation: 0, z_rotation: 0, rotation_order: 'XYZ', rotation_units: 'degree',
         x_scaling: 1, y_scaling: 1, z_scaling: 1, scaling_units: 'ratio',
-        x_translation: 0, y_translation: 0, z_translation: 0, translation_units: 'millimeter'
+        x_translation: random(100, 900), y_translation: 200, z_translation: 200, translation_units: 'millimeter'
       },
-      x_dimension: 10,
-      y_dimension: 10,
-      z_dimension: 10
+      x_dimension: 20,
+      y_dimension: 20,
+      z_dimension: 20
     }
   }
 
