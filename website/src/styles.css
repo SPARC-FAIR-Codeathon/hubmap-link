@@ -29,6 +29,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     fill: #fff;
     stroke: rgba(0, 139, 139, 0.7);
     stroke-width: 3px;
+    cursor:pointer;
 }
 circle.node.hubmap { stroke: rgb(144, 158, 121); }
 circle.node.sparc  { stroke: darkslateblue; }
@@ -51,4 +52,15 @@ circle.node.sparc  { stroke: darkslateblue; }
 text.fd-text {
     font-family: sans-serif;
     font-size: 10px;
+}
+
+div.tooltip {	
+    position: absolute;	
+    text-align: center;	
+    padding: 5px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
 }

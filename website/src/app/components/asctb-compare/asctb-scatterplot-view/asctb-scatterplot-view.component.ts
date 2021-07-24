@@ -103,7 +103,10 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
     }
     
 
-
+    // Define a div for a tooltip
+    var div = d3.select("body").append("div")	
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
 
     var g = this.svg.append("g")
@@ -120,6 +123,19 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
       .attr('stroke-width', 2)
       .attr('stroke', function(d) {
         return (d.group == 1)? 'rgba(0, 139, 139, 0.7)' : null;
+      })
+      .on("mouseover", function(event, d) {		
+        div.transition()		
+          .duration(200)		
+          .style("opacity", .9);		
+        div.html(""+d.id)	
+          .style("left", (event.pageX) + "px")		
+          .style("top", (event.pageY - 28) + "px");	
+        })					
+      .on("mouseout", function(event, d) {
+          div.transition()		
+            .duration(500)		
+            .style("opacity", 0);
       });
 
     //this.svg.selectAll("g.nodes")
@@ -169,21 +185,20 @@ export class AsctbScatterplotViewComponent implements OnInit, OnChanges {
     );
 
     function dragstarted(event, d) {
-      d3.select(this).classed("fixed", d.fixed = true);
       if (!event.active) simulation.alphaTarget(0.3).restart();
       event.subject.fx = event.subject.x;
       event.subject.fy = event.subject.y;
     }
     
-    function dragged(event) {
-      event.subject.fx = event.x;
-      event.subject.fy = event.y;
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
     }
     
     function dragended(event) {
       if (!event.active) simulation.alphaTarget(0);
-      event.subject.fx = null;
-      event.subject.fy = null;
+      //event.subject.fx = null;
+      //event.subject.fy = null;
     }
 
 
