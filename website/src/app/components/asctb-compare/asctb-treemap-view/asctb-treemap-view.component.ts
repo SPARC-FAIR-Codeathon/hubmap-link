@@ -38,7 +38,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
 
     wHeight = (wHeight > heightDynamicScale)?wHeight: heightDynamicScale;
 
-    var margin = {top: 0, right: 90, bottom: 0, left: 90},
+    var margin = {top: 0, right: 0, bottom: 0, left: 90},
         width = wWidth - margin.left - margin.right,
         height = wHeight - margin.top - margin.bottom;
 
@@ -60,7 +60,6 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
     // Assigns parent, children, height, depth
     root = d3.hierarchy(this.asTree, function(d) {
       return d.asAcyclicalChildren;
-      //return new Set([...d.asHubmapChildren, ...d.asSparcChildren, ...d.asSharedChildren]);
     });
 
     root.x0 = height / 2;
@@ -76,6 +75,23 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
       // Compute the new tree layout.
       var nodes = treeData.descendants(),
           links = treeData.descendants().slice(1);
+
+      function findLongestPathToRoot(node, visited){
+        let longestRoute = 0;
+        if(!node.asParents || node.asParents.length < 1 || visited.has(node)) return 0;
+        visited.add(node);
+        node.asParents.forEach(parent => {
+          let dist = findLongestPathToRoot(parent, new Set(visited)) + 1;
+          longestRoute = (longestRoute >= dist)?longestRoute:dist;
+        });
+        return longestRoute;
+      }
+
+      //Compute depth. The depth assigned by d3.hierarchy makes unsafe assumptions
+      nodes.forEach(function(d){
+        let newDepth = findLongestPathToRoot(d.data, new Set());
+        d.depth = newDepth;
+      });
 
       // Normalize for fixed-depth.
       nodes.forEach(function(d){ d.y = d.depth * 180});
@@ -164,9 +180,9 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
 
       // ****************** links section ***************************
       // Index nodes by id
-      let linkIdx = {};
+      let nodeIdx = {};
       nodes.forEach(node => {
-        linkIdx[node.data.id] = node;
+        nodeIdx[node.data.id] = node;
       });
       
       //For nodes with multiple parents, duplicate them and copy each other parent node into the parent property
@@ -174,7 +190,7 @@ export class AsctbTreemapViewComponent implements OnInit, OnChanges {
       links.forEach(node => {
         node.data.asParents.forEach(parent => {
           let nextNode = Object.assign({}, node);
-          nextNode.parent = linkIdx[parent.id];
+          nextNode.parent = nodeIdx[parent.id];
           expandedLinks.push(nextNode);
         });
       });
