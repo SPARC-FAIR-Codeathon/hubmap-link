@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { get, omit, set, toNumber } from 'lodash';
 
-type JsonLdObj = Record<string, any>;
-type JsonLd = JsonLdObj | JsonLdObj[];
-type JsonDict = Record<string, unknown>;
+export type JsonLdObj = Record<string, any>;
+export type JsonLd = JsonLdObj | JsonLdObj[];
+export type JsonDict = Record<string, any>;
 const HBM_PREFIX = 'https://entity.api.hubmapconsortium.org/entities/';
 
 // eslint-disable-next-line max-len
@@ -87,7 +87,7 @@ const HBM_ORGAN_LABELS: { [organName: string]: string } = {
   OT: 'Other Organ',
 };
 
-const ENTITY_CONTEXT = {
+export const ENTITY_CONTEXT = {
   '@base': 'http://purl.org/ccf/latest/ccf-entity.owl#',
   '@vocab': 'http://purl.org/ccf/latest/ccf-entity.owl#',
   ccf: 'http://purl.org/ccf/latest/ccf.owl#',

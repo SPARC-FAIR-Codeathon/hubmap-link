@@ -15,5 +15,5 @@ export async function fetchHuBMAPData(): Promise<any> {
     docvalue_fields: [],
     post_filter: { term: { 'entity_type.keyword': 'Sample' } }
   }, 10000);
-  return hubmapResponseAsJsonLd(esData);
+  return hubmapResponseAsJsonLd(esData, 'https://assets.hubmapconsortium.org', 'https://portal.hubmapconsortium.org/');
 }

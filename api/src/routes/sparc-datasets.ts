@@ -1,5 +1,5 @@
 import { Express, Request, Response } from 'express';
-import { fetchSparcDatasets } from '../functions/fetch-datasets';
+import { fetchSparcDatasets } from '../functions/fetch-sparc-data';
 import { apiKey } from '../functions/api-key';
 
 
