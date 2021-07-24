@@ -2,7 +2,7 @@
     <mat-toolbar>
         <span>HuBMAP & SPARC Linkages</span>
 
-        <div *ngIf="apiKeystoreService.sparcSciCrunchApiKey">
+        <div>
             <button mat-raised-button class="margin-left-100" [ngClass]="{'selected': router.url === '/asctb-compare' || router.url === '/'}" routerLink="asctb-compare">
                 <mat-icon>collections_bookmark</mat-icon>
                 Partonomy Comparison
@@ -11,17 +11,20 @@
                 <mat-icon>table_view</mat-icon>
                 Dataset Linkage
             </button>
+            <a mat-raised-button class="margin-left-15" href="assets/ccf-eui.html" rel="noreferrer noopener" target="_blank">
+              <mat-icon>preview</mat-icon>
+              View Datasets in EUI
+            </a>
             <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
                 <mat-icon>file_download</mat-icon>
-                ASCT+B File Export
+                ASCT+B Table Export
             </button>
-
-
         </div>
 
         <span fxFlex></span>
-            <button mat-mini-fab aria-label="Change API key" matTooltip="Change API key"  routerLink=""  *ngIf="apiKeystoreService.sparcSciCrunchApiKey" (click)="clearKey()">
-                <mat-icon>lock_open</mat-icon>
-            </button>
+
+        <a mat-mini-fab aria-label="GitHub repository and documentation" matTooltip="GitHub repository and documentation" href="https://github.com/SPARC-FAIR-Codeathon/hubmap-link">
+            <mat-icon>info_outline</mat-icon>
+        </a>
     </mat-toolbar>
 </div>

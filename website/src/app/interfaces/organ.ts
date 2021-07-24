@@ -1,4 +1,4 @@
-import { CellType } from "./cellType";
+import { CellType } from './cellType';
 
 export interface Organ {
     id:string;

@@ -23,7 +23,7 @@ const GROUP_UUID_MAPPING: { [uuid: string]: string } = {
 };
 
 /** RUI organ name to entity identifier. */
-const RUI_ORGANS: { [organName: string]: string } = {
+export const RUI_ORGANS: { [organName: string]: string } = {
   bladder: 'http://purl.obolibrary.org/obo/UBERON_0001255',
   body: 'http://purl.obolibrary.org/obo/UBERON_0013702',
   brain: 'http://purl.obolibrary.org/obo/UBERON_0000955',
@@ -52,7 +52,7 @@ const RUI_ORGANS: { [organName: string]: string } = {
 
 // Taken from: https://github.com/hubmapconsortium/commons/blob/master/hubmap_commons/hubmap_const.py#L101
 /** HBM organ names to set of RUI organs. */
-const HBM_ORGANS: { [organName: string]: string[] } = {
+export const HBM_ORGANS: { [organName: string]: string[] } = {
   BL: [RUI_ORGANS.body, RUI_ORGANS.bladder],
   RK: [RUI_ORGANS.body, RUI_ORGANS.kidney, RUI_ORGANS.right_kidney],
   LK: [RUI_ORGANS.body, RUI_ORGANS.kidney, RUI_ORGANS.left_kidney],
@@ -130,13 +130,13 @@ export const ENTITY_CONTEXT = {
  * @param data The hubmap data.
  * @returns The converted data.
  */
- export function hubmapResponseAsJsonLd(data: unknown, assetsApi = '', portalUrl = '', serviceToken?: string, debug = false): JsonLd {
+ export function hubmapResponseAsJsonLd(data: unknown, assetsApi = '', portalUrl = '', serviceToken?: string, debug = true): JsonLd {
   const entries = (get(data, 'hits.hits', []) as JsonDict[])
     .map(e => get(e, '_source', {}) as JsonDict);
 
   const donorLookup: Record<string, JsonLdObj> = {};
   const unflattened: JsonLdObj[] = entries.map(e =>
-    new HuBMAPTissueBlock(e, assetsApi, portalUrl, serviceToken).toJsonLd()
+    new HuBMAPTissueBlock(e, assetsApi, portalUrl, serviceToken).toJsonLd(debug)
   );
   for (const donor of unflattened) {
     const donorId = donor['@id'] as string;
@@ -149,39 +149,9 @@ export const ENTITY_CONTEXT = {
   }
   const donors = Object.values(donorLookup);
 
-  if (debug) {
-    debugDonors(donors);
-    console.log(donors.map(d => ({ '@context': ENTITY_CONTEXT, ...d })));
-  }
-
   return { '@context': ENTITY_CONTEXT, '@graph': donors };
 }
 
-function debugDonors(donors: JsonLdObj[]) {
-  let datasets: JsonLdObj[] = [];
-  let deleted = 0;
-  for (const donor of donors.filter(d => (d.samples as []).length > 1)) {
-    const samples = donor.samples as JsonLdObj[];
-    for (let i=0; i < samples.length; i++) {
-      const blockId = samples[i]['@id'] as string;
-      datasets = datasets.concat(samples[i].datasets as JsonLdObj[]);
-      for (const section of samples[i].sections as JsonLdObj[]) {
-        datasets = datasets.concat(section.datasets as JsonLdObj[]);
-      }
-      for (let j=i+1; j < samples.length; j++) {
-        const sections = samples[j].sections as JsonLdObj[];
-        if (sections.find(s => s['@id'] === blockId)) {
-          samples[i].deleteMe = true;
-          deleted++;
-        }
-      }
-    }
-    donor.samples = samples.filter(s => s.deleteMe !== true);
-  }
-  if (deleted > 0) {
-    console.log(`⚠ ${deleted} sections identified as blocks`);
-  }
-}
 
 export class HuBMAPTissueBlock {
   bad = false;
@@ -474,7 +444,7 @@ export class HuBMAPTissueBlock {
     return omit(Object.assign({}, this), ['data', 'bad', 'donor']) as unknown as JsonLdObj;
   }
 
-  toJsonLd(): JsonLdObj {
-    return { ...this.donor, samples: [this.getTissueBlock()] };
+  toJsonLd(debug = true): JsonLdObj {
+    return { ...this.donor, samples: [this.getTissueBlock()], data: debug ? this.data : undefined };
   }
 }

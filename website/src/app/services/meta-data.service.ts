@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ORGAN_TYPES } from '../common/global-constants';
 import { Dataset } from '../interfaces/dataset';
 import { MetaDataAjaxService } from './ajax/meta-data-ajax.service';
-import { ApiKeystoreService } from './api-keystore.service';
-import { ORGAN_TYPES } from '../common/global-constants';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetaDataService {
 
-  constructor(private metaDataAjaxService: MetaDataAjaxService,
-    private apiKeystoreService: ApiKeystoreService) { }
+  constructor(private metaDataAjaxService: MetaDataAjaxService) { }
 
   public datasetArr:Dataset[] = [];
 
@@ -29,7 +28,7 @@ export class MetaDataService {
     });
 
     //Fetch Sparc metadata
-    this.metaDataAjaxService.fetchSparcMetadata(this.apiKeystoreService.sparcSciCrunchApiKey).subscribe({
+    this.metaDataAjaxService.fetchSparcMetadata().subscribe({
       next: (response:any) => {
         console.dir(response);
         this.restructureSparcMetadata(response);
@@ -44,7 +43,7 @@ export class MetaDataService {
   private restructureSparcMetadata(sMetadata:any){
     sMetadata.hits.hits.forEach(smd => {
       let record = this.initializeDatasetRecord('SPARC');
-      
+
       record.name = smd._source?.item?.name;
       record.description = smd._source?.item?.description;
       if(smd._source?.anatomy?.organ){

@@ -2,7 +2,7 @@ import { fetchElasticSearch } from './fetch-elastic-search';
 import { sparcResponseAsJsonLd } from './sparc-data';
 
 
-export async function fetchSparcDatasets(apiKey: string, debug = true): Promise<any> {
+export async function fetchSparcDatasets(apiKey: string, format: string): Promise<any> {
   const esData = await fetchElasticSearch({
     query: {
       query_string: {
@@ -10,5 +10,9 @@ export async function fetchSparcDatasets(apiKey: string, debug = true): Promise<
       }
     }
   }, 1000, apiKey);
-  return sparcResponseAsJsonLd(esData, debug);
+  if (format === 'jsonld' || format === 'jsonld-debug') {
+    return sparcResponseAsJsonLd(esData, format === 'jsonld-debug');
+  } else {
+    return esData;
+  }
 }
