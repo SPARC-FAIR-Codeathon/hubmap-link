@@ -67,7 +67,10 @@ export class AsctbCompareService {
   countSparcASLinks:number = 0;
   countHubmapASLinks:number = 0;
   countSharedASLinks:number = 0;
-
+  countTotalCT:number = 0;
+  //countSparcCT:number = 0;
+  //countHubmapCT:number = 0;
+  //countSharedCT:number = 0;
   /*************************************************************************************
    * Data tree structure representing organ data from both sparc and hubmap.
    *************************************************************************************/
@@ -109,14 +112,17 @@ export class AsctbCompareService {
     this.synonymIdx = null;
     this.mergedOrganIdx = {};
     this.countTotalAS = 0;
-
     this.countSparcAS = 0;
     this.countHubmapAS = 0;
     this.countSharedAS = 0;
-
     this.countSparcASLinks = 0;
     this.countHubmapASLinks = 0;
     this.countSharedASLinks = 0;
+    this.countTotalCT = 0;
+    //this.countSparcCT = 0;
+    //this.countHubmapCT = 0;
+    //this.countSharedCT = 0;
+
 
     //Update the data loading status
     this.dataLoadStatus = 'Loading';
@@ -352,6 +358,8 @@ export class AsctbCompareService {
     this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;
     this.countHubmapAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => !organ.sparcResident && organ.hubmapResident).length;
     this.countSharedAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && organ.hubmapResident).length;
+
+    this.countTotalCT = Object.keys(this.mergedCellTypeIdx).length;
     
   }
 

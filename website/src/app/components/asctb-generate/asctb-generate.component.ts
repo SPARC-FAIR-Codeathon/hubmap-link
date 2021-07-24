@@ -15,21 +15,40 @@ export class AsctbGenerateComponent implements OnInit {
   public selections = {
     chooseFromList: true,
     inputOrganIdentifier: null, //Organ identifier from the input
-    selectedOrgan: null //Organ chosen from the select control
+    selectedOrgan: null, //Organ chosen from the select control
+    fileUrl: null //The url for the generated CSV file
   }
 
   ngOnInit(): void {
     if(this.asctbCompareService.organTypes && this.asctbCompareService.organTypes.length > 0){
       this.selections.selectedOrgan = this.asctbCompareService.organTypes[0];
     }
+    this.generateUrl();
   }
 
-
   exportClick(): void {
+    this.generateUrl();
+    window.open(this.selections.fileUrl);
+  }
+
+  generateUrl(): void{
     let organIdentifier = (this.selections.chooseFromList) ? 
-      this.selections.selectedOrgan.id : this.selections.inputOrganIdentifier;
-    let url = `${this.endpoint}/asctb/${organIdentifier}?format=csv`;
-    window.open(url);
+    this.selections.selectedOrgan.id : this.selections.inputOrganIdentifier;
+    this.selections.fileUrl = `${this.endpoint}/asctb/${organIdentifier}?format=csv`;
+  }
+
+  urlCopyClick(): void{
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.selections.fileUrl;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
   }
 
   /*

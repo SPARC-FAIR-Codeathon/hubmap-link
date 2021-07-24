@@ -15,12 +15,12 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <mat-form-field appearance="outline" *ngIf="!selections.chooseFromList">
                     <mat-label>Sparc Organ Identifier</mat-label>
-                    <input matInput placeholder="Ex. UBERON:0000948" [(ngModel)]="selections.inputOrganIdentifier" name="inputOrganIdentifier" required>
+                    <input matInput placeholder="Ex. UBERON:0000948" [(ngModel)]="selections.inputOrganIdentifier" name="inputOrganIdentifier" (change)="generateUrl()" required>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" appearance="outline" class="margin-top-10" *ngIf="selections.chooseFromList">
                     <mat-label>Select an organ</mat-label>
-                    <mat-select [(ngModel)]="selections.selectedOrgan" name="selectOrgan" required>
+                    <mat-select [(ngModel)]="selections.selectedOrgan" name="selectOrgan" (selectionChange)="generateUrl()" required>
                         <mat-option *ngFor="let organType of asctbCompareService.organTypes" [value]="organType">
                             {{organType.name}}
                         </mat-option>
@@ -31,6 +31,15 @@
                     <mat-icon>cloud_download</mat-icon>
                     Export
                 </button>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-form-field appearance="outline" *ngIf="selections.fileUrl" fxFlex>
+                    <mat-label>Export URL</mat-label>
+                    <input matInput [(ngModel)]="selections.fileUrl" name="fileUrl" disabled>
+                    <button matSuffix mat-icon-button aria-label="Copy" (click)="urlCopyClick()">
+                        <mat-icon>content_copy</mat-icon>
+                    </button>
+                </mat-form-field>
             </div>
         </form>
     </mat-card>
