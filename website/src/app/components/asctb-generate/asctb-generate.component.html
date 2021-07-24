@@ -34,9 +34,9 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start center">
                 <mat-form-field appearance="outline" *ngIf="selections.fileUrl" fxFlex>
-                    <mat-label>Export URL</mat-label>
+                    <mat-label>Hosted URL</mat-label>
                     <input matInput [(ngModel)]="selections.fileUrl" name="fileUrl" disabled>
-                    <button matSuffix mat-icon-button aria-label="Copy" (click)="urlCopyClick()">
+                    <button matSuffix mat-icon-button aria-label="Copy" matTooltip="Copy the ASCT+B CSV URL to your clipboard" (click)="urlCopyClick()">
                         <mat-icon>content_copy</mat-icon>
                     </button>
                 </mat-form-field>

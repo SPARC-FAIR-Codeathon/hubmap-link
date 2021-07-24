@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AsctbCompareService } from 'src/app/services/asctb-compare.service';
 import { environment } from '../../../environments/environment';
 
@@ -10,7 +11,8 @@ import { environment } from '../../../environments/environment';
 export class AsctbGenerateComponent implements OnInit {
   endpoint = environment.apiEndpoint;
 
-  constructor(public asctbCompareService: AsctbCompareService) { }
+  constructor(public asctbCompareService: AsctbCompareService,
+    private matSnackBar: MatSnackBar) { }
 
   public selections = {
     chooseFromList: true,
@@ -49,35 +51,7 @@ export class AsctbGenerateComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
+
+    this.matSnackBar.open('URL copied to clipboard', 'ok', {duration: 2000});
   }
-
-  /*
-  exportClick(): void {
-    let organIdentifier = (this.selections.chooseFromList) ? 
-      this.selections.selectedOrgan.id : this.selections.inputOrganIdentifier;
-    let fileName = organIdentifier+".csv"
-
-    //Short circuit if nothing was selected
-    if(!organIdentifier) return;
-    //Generate the local csv file
-    this.asctbGenerateService.generateAsctbDataForExport(organIdentifier, this.downloadFile);
-
-  }
-  */
-
-  /**************************************************************************************************************************
-   * Utility function to download a file. Adapted from:
-   * https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
-   **************************************************************************************************************************/
-  /*
-  private downloadFile(fileName:string, csvStr:string){
-    let csvContent = "data:text/csv;charset=utf-8," + csvStr;
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link); // Required for FF
-    link.click();
-  }
-  */
 }
