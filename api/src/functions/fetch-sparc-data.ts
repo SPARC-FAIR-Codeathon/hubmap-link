@@ -2,7 +2,7 @@ import { fetchElasticSearch } from './fetch-elastic-search';
 import { sparcResponseAsJsonLd } from './sparc-data';
 
 
-export async function fetchSparcDatasets(apiKey: string): Promise<any> {
+export async function fetchSparcDatasets(apiKey: string, debug = true): Promise<any> {
   const esData = await fetchElasticSearch({
     query: {
       query_string: {
@@ -10,5 +10,5 @@ export async function fetchSparcDatasets(apiKey: string): Promise<any> {
       }
     }
   }, 1000, apiKey);
-  return sparcResponseAsJsonLd(esData);
+  return sparcResponseAsJsonLd(esData, debug);
 }
