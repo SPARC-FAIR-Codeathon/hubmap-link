@@ -35,7 +35,7 @@ This application is built automatically using [GitHub Actions](https://github.co
 
 ## Installation
 
-This application consists of two parts, a webapp and a proxy server.
+This application consists of two parts, a webapp and a proxy server. The webapp is dependent on the proxy server for data transformation and to obscure the SciCrunch API key.
 To get started locally, follow these instructions:
 
 1. If you haven't done it already, [make a fork of this repo](https://github.com/SPARC-FAIR-Codeathon/hubmap-link/fork).
@@ -45,7 +45,7 @@ To get started locally, follow these instructions:
 1. Install the Angular CLI \
     `npm install -g @angular/cli`
 
-## Building and Installing the webapp project
+## Building and installing the webapp project
 
 For building and installing, the following instructions assume you have changed directories to the website dir (`cd website`).
 
@@ -67,7 +67,7 @@ Additional options may be configured to meet the objectives of your build. More 
 
 The transpiled build artifacts are located in the `/website/dist/` directory. All files in the build directory should be deployed to the root directory of a static web server such as nginx or apache2. The CI/CD workflow described above places these build artifacts in the `gh-pages` branch to be automatically served by GitHub Pages.
 
-## Building and Installing the proxy server
+## Building and installing the proxy server
 
 The following instructions assume you have changed directories to the proxy server home dir (`cd api`).
 
@@ -85,7 +85,8 @@ If on a Windows-based OS:
 ```
 > set SCICRUNCH_API_KEY=APIKEYXXXX
 ```
-npm start
+
+To begin running the proxy server, execute `npm start`
 
 ### Development server
 
