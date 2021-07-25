@@ -1,7 +1,4 @@
-<div class="loading" *ngIf="metaDataService.datasetArr.length < 1">
-    Loading...
-</div>
-<table *ngIf="metaDataService.datasetArr.length > 0">
+<table>
     <thead>
         <tr><td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
             <strong>{{col}}</strong>
