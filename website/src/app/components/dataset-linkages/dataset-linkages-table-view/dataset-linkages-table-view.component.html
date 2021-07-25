@@ -13,7 +13,7 @@
         <ng-container matColumnDef="description">
             <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Description </th>
             <!-- <td mat-cell *matCellDef="let ds"> {{ds.description}} </td> -->
-            <td mat-cell *matCellDef="let ds"> {{ (ds.description.length>100)? (ds.description | slice:0:100)+'...':(ds.description) }} </td>
+            <td mat-cell *matCellDef="let ds"> {{ (ds.description.length>150)? (ds.description | slice:0:150)+'...':(ds.description) }} </td>
             
         </ng-container>
 
