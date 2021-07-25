@@ -1,0 +1,24 @@
+h4{ color: white;}
+a:link{ color: white; }
+a:visited { color: white; }
+table, th, td {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255,255,255,.12);
+    border-collapse: collapse;
+}
+tr {
+    color: white;
+    background-color: #424242;
+}
+thead {
+    height: 56px;
+    text-transform: capitalize;
+}
+td {
+    padding-left: 14px;
+    min-height: 48px;
+}
+td:last-child {
+    padding-right: 14px;
+}

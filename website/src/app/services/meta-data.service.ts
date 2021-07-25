@@ -60,5 +60,6 @@ export class MetaDataService {
     this.datasetCountHubmap = hubmap.length;
     this.datasetCountSparc = sparc.length;
     this.datasetArr = sparc.concat(hubmap);
+    console.dir(this.datasetArr);
   }
 }

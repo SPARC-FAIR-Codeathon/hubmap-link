@@ -1,13 +1,62 @@
-<table>
-    <thead>
-        <tr><td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
-            <strong>{{col}}</strong>
-        </td></tr>
-    </thead><tbody>
-        <tr *ngFor="let row of metaDataService.datasetArr">
-            <td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
-                {{row[col]}}
+<div fxLayout="row" fxLayoutAlign="start start" class="fixed-stage-height" *ngIf="metaDataService.datasetArr.length > 0" fxFlex>
+    <table mat-table [dataSource]="metaDataService.datasetArr" fxFlex>
+        <ng-container matColumnDef="name">
+            <th class="header-font w-m175" mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let ds" > 
+                <a class="white-text" href="{{ds.externalLink}}" target="_new">
+                    {{ds.name}}
+                </a>
             </td>
-        </tr>
-    </tbody>
-</table>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="description">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Description </th>
+            <!-- <td mat-cell *matCellDef="let ds"> {{ds.description}} </td> -->
+            <td mat-cell *matCellDef="let ds"> {{ (ds.description.length>100)? (ds.description | slice:0:100)+'...':(ds.description) }} </td>
+            
+        </ng-container>
+
+        <!-- Anatomical Structure ID Column -->
+        <ng-container matColumnDef="anatomicalStructureId">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Anatomical Structure ID </th>
+            <td mat-cell *matCellDef="let ds"> {{ds.anatomicalStructureId}} </td>
+        </ng-container>
+
+        <!-- Anatomical Structure Name Column -->
+        <ng-container matColumnDef="anatomicalStructureName">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Anatomical Structure Name </th>
+            <td mat-cell *matCellDef="let ds"> {{ tableFormatStringArray(ds.anatomicalStructureName) }} </td>
+        </ng-container>
+
+        <!-- Data Type Column -->
+        <ng-container matColumnDef="dataType">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Data Type </th>
+            <td mat-cell *matCellDef="let ds"> {{ds.dataType}} </td>
+        </ng-container>
+
+        <!-- Publication Status Column -->
+        <ng-container matColumnDef="publicationStatus">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Publication Status </th>
+            <td mat-cell *matCellDef="let ds"> {{ds.publicationStatus}} </td>
+        </ng-container>
+
+        <!-- Group Name -->
+        <ng-container matColumnDef="groupName">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Group Name </th>
+            <td mat-cell *matCellDef="let ds"> {{ds.groupName}} </td>
+        </ng-container>
+
+        <!-- Consortium Column -->
+        <ng-container matColumnDef="consortium">
+            <th class="header-font w-m75" mat-header-cell *matHeaderCellDef> Consortium </th>
+            <td mat-cell *matCellDef="let ds" class="center-text"> 
+                <img width="50px" class="hubmap-logo" src="assets/img/hubmap-logo.svg" *ngIf="ds.consortium === 'HuBMAP'"> 
+                <img width="50px" class="sparc-logo" src="assets/img/sparc-logo.svg" *ngIf="ds.consortium === 'SPARC'">
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="presentDataSource(row)"></tr>
+    </table>
+</div>

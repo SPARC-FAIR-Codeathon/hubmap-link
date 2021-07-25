@@ -51,6 +51,7 @@ import { AsctbGenerateComponent } from './components/asctb-generate/asctb-genera
 import { DatasetLinkagesComponent } from './components/dataset-linkages/dataset-linkages.component';
 import { DatasetLinkagesSidebarComponent } from './components/dataset-linkages/dataset-linkages-sidebar/dataset-linkages-sidebar.component';
 import { DatasetLinkagesTableViewComponent } from './components/dataset-linkages/dataset-linkages-table-view/dataset-linkages-table-view.component';
+import { DatasetModalComponent } from './components/dataset-linkages/dataset-linkages-table-view/dataset-modal/dataset-modal.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { DatasetLinkagesTableViewComponent } from './components/dataset-linkages
     AsctbGenerateComponent,
     DatasetLinkagesComponent,
     DatasetLinkagesSidebarComponent,
-    DatasetLinkagesTableViewComponent
+    DatasetLinkagesTableViewComponent,
+    DatasetModalComponent
   ],
   imports: [
     BrowserModule,

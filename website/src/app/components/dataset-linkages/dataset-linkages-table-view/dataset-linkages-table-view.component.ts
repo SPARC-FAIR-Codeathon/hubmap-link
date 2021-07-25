@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MetaDataService } from '../../../services/meta-data.service';
+import { DatasetModalComponent } from './dataset-modal/dataset-modal.component';
 
 
 @Component({
@@ -9,9 +11,24 @@ import { MetaDataService } from '../../../services/meta-data.service';
 })
 export class DatasetLinkagesTableViewComponent {
 
-  constructor(public metaDataService:MetaDataService) { }
+  constructor(public metaDataService:MetaDataService,
+    public matDialog: MatDialog) { }
 
-  getObjectKeys(obj: unknown): string[] {
-    return Object.keys(obj);
+  public expandDescriptions: boolean = false;
+  public displayedColumns: string[] = ['name', 'description', 'anatomicalStructureId', 'anatomicalStructureName', 'dataType', 'publicationStatus', 'groupName', 'consortium']; 
+
+  public tableFormatStringArray(arr: string[]):any{
+    if(!arr.length) return arr;
+    if(arr.length > 3){
+      return arr.slice(0, 3).join(', ') + '...';
+    }
+    return arr.join(', ');
+  }
+
+  public presentDataSource(ds: any){
+    console.log('click event');
+    this.matDialog.open(DatasetModalComponent, {
+      data: ds
+    });
   }
 }
