@@ -24,9 +24,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .back-button {
+      position: absolute !important;
+      top: 14px;
+      left: 390px;
+      z-index: 1000;
+      text-align: center !important;
+      background: white;
+      color: black;
+    }
+  </style>
   <script src="wc.js" async></script>
 </head>
 <body class="mat-typography">
+  <a class="mat-focus-indicator mat-button mat-button-base back-button"
+    href="https://sparc-fair-codeathon.github.io/hubmap-link/dataset-linkage">
+      <span class="mat-button-wrapper">BACK</span>
+  </a>
   <ccf-eui class="dark-theme"></ccf-eui>
 </body>
 </html>
