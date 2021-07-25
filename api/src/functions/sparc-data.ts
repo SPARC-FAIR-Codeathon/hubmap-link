@@ -1,5 +1,6 @@
 import { get, random, uniq } from 'lodash';
 import { ENTITY_CONTEXT, JsonDict, JsonLdObj, RUI_ORGANS } from './hubmap-data';
+import { SPARC_ORGANS, DEFAULT_PLACEMENT, PlacementConfig } from './sparc-scaffolds';
 
 
 export function sparcResponseAsJsonLd(data: unknown, debug = true): JsonLdObj {
@@ -23,11 +24,7 @@ export class SparcTissueBlock {
   creatorLastName: string;
   creator: string;
   dateCreated: string;
-  dataUpdated: string;
-  age: string;
-  sex: string;
-  groupName: string;
-  groupId: string;
+  scaffold: PlacementConfig;
 
   constructor(public data: JsonDict) {
     this['@id'] = data.item.curie.replace('DOI:', 'https://dx.doi.org/');
@@ -35,6 +32,12 @@ export class SparcTissueBlock {
     this.creatorLastName = get(data, 'pennsieve.owner.last.name');
     this.creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
     this.dateCreated = data.dates.created.timestamp.split('T')[0];
+    this.scaffold = get(data, 'anatomy.scaffold', [])
+      .concat(get(data, 'anatomy.organ', []))
+      .concat(get(data, 'anatomy.sampleSpecimenLocation', []))
+      .map((d: Record<string,string>) => SPARC_ORGANS[d.curie] || SPARC_ORGANS[d.name])
+      .filter((p: PlacementConfig) => !!p)      
+      .concat(DEFAULT_PLACEMENT)[0];
 
     this.meta = this.getMetadata(data);
     this.donor = this.getDonor(data);
@@ -121,6 +124,12 @@ export class SparcTissueBlock {
     const creator_first_name = get(data, 'pennsieve.owner.first.name');
     const creator_last_name = get(data, 'pennsieve.owner.last.name');
     const creator = `${get(data, 'pennsieve.owner.first.name')} ${get(data, 'pennsieve.owner.last.name')}`;
+
+    const sexes = uniq<'male' | 'female'>(get(data, 'attributes.subject.sex', []).map((s: any) => s.value as string));
+    const sex = sexes.length === 1 ? sexes[0] : (random(1,2) === 1 ? 'male' : 'female');
+    const scaffold = this.scaffold;
+    const placement = sex === 'male' ? scaffold.male_placement : scaffold.female_placement;
+
     const ontologyTerms = [RUI_ORGANS.body, RUI_ORGANS.skin];
 
     return {
@@ -138,11 +147,14 @@ export class SparcTissueBlock {
         '@context': 'https://hubmapconsortium.github.io/hubmap-ontology/ccf-context.jsonld',
         '@id': `${this['@id']}#SampleLocationPlacement`,
         '@type': 'SpatialPlacement',
-        target: 'http://purl.org/ccf/latest/ccf.owl#VHMSkin',
+        target: `http://purl.org/ccf/latest/ccf.owl${placement.target}`,
         placement_date: data.dates.created.timestamp,
-        x_rotation: 0, y_rotation: 0, z_rotation: 0, rotation_order: 'XYZ', rotation_units: 'degree',
+        x_rotation: random(0, 45), y_rotation: random(0, 45), z_rotation: random(0, 45), rotation_order: 'XYZ', rotation_units: 'degree',
         x_scaling: 1, y_scaling: 1, z_scaling: 1, scaling_units: 'ratio',
-        x_translation: random(100, 900), y_translation: 200, z_translation: 200, translation_units: 'millimeter'
+        x_translation: random(placement.bottom_left[0], placement.bottom_left[0] + placement.span),
+        y_translation: placement.bottom_left[1],
+        z_translation: placement.bottom_left[2],
+        translation_units: 'millimeter'
       },
       x_dimension: 20,
       y_dimension: 20,
@@ -153,12 +165,12 @@ export class SparcTissueBlock {
   getDonor(data: JsonDict): JsonLdObj {
     const organism = get(data, 'organisms.scaffold[0].species.name', get(data, 'organisms.subject[0].species.name'));
     const organ = get(data, 'anatomy.scaffold[0].name', get(data, 'anatomy.organ[0].name'));
-    const sexes = get(data, 'attributes.subject.sex', []);
-    const sex = sexes.length === 1 ? sexes[0].value : undefined;
+    const sexes = uniq<'male' | 'female'>(get(data, 'attributes.subject.sex', []).map((s: any) => s.value as string));
+    const sex = sexes.length === 1 ? sexes[0] : undefined;
     const ages = get(data, 'attributes.subject.ageCategory', []);
     const age = ages.length === 1 ? ages[0].value : undefined;
 
-    const label = [organism, organ, sex, age].filter(s => !!s).join(', ');
+    const label = [organism, this.scaffold.name, sex, age].filter(s => !!s).join(', ');
     
     const dateEntered = (data.dates.updated?.timestamp ?? data.dates.created.timestamp).split('T')[0];
     const groupName = get(data, 'pennsieve.organization.name');
