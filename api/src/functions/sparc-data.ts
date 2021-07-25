@@ -201,10 +201,10 @@ export class SparcTissueBlock {
       ...this.donor,
       samples: [{ ...this.sample,
         rui_location: this.ruiLocation,
-        datasets: this.datasets
-      }],
-      data: debug ? this.data : undefined,
-      meta: debug ? this.meta : undefined
+        datasets: this.datasets,
+        data: debug ? this.data : undefined,
+        meta: debug ? this.meta : undefined
+      }]
     };
   }
 }

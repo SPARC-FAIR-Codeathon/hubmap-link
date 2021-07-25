@@ -15,7 +15,9 @@ export async function fetchSparcDatasets(apiKey: string, format: string): Promis
     case 'json-metadata':
     case 'json-metadata-debug':
       const data = sparcResponseAsJsonLd(esData, true);
-      return (data['@graph'] as any[]).map(row => row.meta);
+      const metadata: any[] = [];
+      (data['@graph'] as any[]).forEach(row => row.samples.filter((s: any) => !!s.meta).forEach((s: any) => metadata.push(s.meta)));
+      return metadata;
     case 'jsonld':
     case 'jsonld-debug':
       return sparcResponseAsJsonLd(esData, debug);

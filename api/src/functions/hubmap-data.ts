@@ -1,10 +1,46 @@
 // Adapted from https://github.com/hubmapconsortium/ccf-ui/blob/main/projects/ccf-database/src/lib/hubmap/hubmap-data.ts
 /* eslint-disable @typescript-eslint/naming-convention */
-import { get, omit, set, toNumber } from 'lodash';
+import { get, omit, set, toNumber, uniq } from 'lodash';
 
 export type JsonLdObj = Record<string, any>;
 export type JsonLd = JsonLdObj | JsonLdObj[];
 export type JsonDict = Record<string, any>;
+
+export const ORGAN_TYPES: Record<string, string> = {
+  AO: "Aorta",
+  BL: "Bladder",
+  BD: "Blood",
+  BM: "Bone Marrow",
+  BR: "Brain",
+  LB: "Bronchus (Left)",
+  RB: "Bronchus (Right)",
+  LE: "Eye (Left)",
+  RE: "Eye (Right)",
+  LF: "Fallopian Tube (Left)",
+  RF: "Fallopian Tube (Right)",
+  HT: "Heart",
+  LK: "Kidney (Left)",
+  RK: "Kidney (Right)",
+  LI: "Large Intestine",
+  LV: "Liver",
+  LL: "Lung (Left)",
+  RL: "Lung (Right)",
+  LY: "Lymph Node",
+  LO: "Ovary (Left)",
+  RO: "Ovary (Right)",
+  PA: "Pancreas",
+  PL: "Placenta",
+  SI: "Small Intestine",
+  SK: "Skin",
+  SP: "Spleen",
+  ST: "Sternum",
+  TH: "Thymus",
+  TR: "Trachea",
+  UR: "Ureter",
+  UT: "Uterus",
+  OT: "Other"
+};
+
 const HBM_PREFIX = 'https://entity.api.hubmapconsortium.org/entities/';
 
 // eslint-disable-next-line max-len
@@ -130,7 +166,7 @@ export const ENTITY_CONTEXT = {
  * @param data The hubmap data.
  * @returns The converted data.
  */
- export function hubmapResponseAsJsonLd(data: unknown, assetsApi = '', portalUrl = '', serviceToken?: string, debug = true): JsonLd {
+ export function hubmapResponseAsJsonLd(data: unknown, assetsApi = '', portalUrl = '', serviceToken?: string, debug = true): JsonLdObj {
   const entries = (get(data, 'hits.hits', []) as JsonDict[])
     .map(e => get(e, '_source', {}) as JsonDict);
 
@@ -156,6 +192,7 @@ export const ENTITY_CONTEXT = {
 export class HuBMAPTissueBlock {
   bad = false;
   donor: JsonLdObj;
+  meta: JsonDict;
 
   '@id': string;
   '@type' = 'Sample';
@@ -173,11 +210,13 @@ export class HuBMAPTissueBlock {
   datasets: JsonLdObj[];
 
   constructor(public data: JsonDict, assetsApi = '', portalUrl = '', serviceToken?: string) {
+    this.meta = this.getMetadata(data, portalUrl);
     const entityType = this.data.entity_type;
     if (entityType !== 'Sample') {
       this.bad = true;
       return;
     }
+    
     const ancestors = (this.data.ancestors || []) as JsonDict[];
     const descendants = (this.data.descendants || []) as JsonDict[];
 
@@ -441,10 +480,37 @@ export class HuBMAPTissueBlock {
   }
 
   getTissueBlock(): JsonLdObj {
-    return omit(Object.assign({}, this), ['data', 'bad', 'donor']) as unknown as JsonLdObj;
+    return omit(Object.assign({}, this), ['data', 'meta', 'bad', 'donor']) as unknown as JsonLdObj;
   }
 
   toJsonLd(debug = true): JsonLdObj {
-    return { ...this.donor, samples: [this.getTissueBlock()], data: debug ? this.data : undefined };
+    return {
+      ...this.donor,
+      samples: [{
+        ...this.getTissueBlock(),
+        meta: debug ? this.meta : undefined,
+        data: debug ? this.data : undefined
+      }],
+    };
+  }
+
+  getMetadata(data: JsonDict, portalUrl: string): Record<string, any> {
+    const organSample = data.ancestors.find((e: any) => e.entity_type === 'Sample' && e.specimen_type === 'organ') as JsonDict;
+    const ontologyTerms = HBM_ORGANS[organSample?.organ as string] || [RUI_ORGANS.body];
+
+    return {
+      name: data.hubmap_id,
+      description: uniq([
+        ...data.ancestors?.map((d: any) => d.description),
+        data.description
+      ].filter(s => !!s)).join('; '),
+      anatomicalStructureId: ontologyTerms.slice(-1).map(s => s.replace('http://purl.obolibrary.org/obo/UBERON_', 'UBERON:')),
+      anatomicalStructureName: data.ancestors.map((o: any)=>ORGAN_TYPES[o.organ]).filter((o: string)=>!!o),
+      dataType: data.entity_type,
+      publicationStatus: data.data_access_level,
+      externalLink: `${portalUrl}/browse/sample/${data.uuid}`,
+      groupName: data.group_name,
+      consortium: 'HuBMAP'
+    };
   }
 }

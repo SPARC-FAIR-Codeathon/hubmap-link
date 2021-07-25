@@ -1,5 +1,5 @@
 export interface Dataset {
-    name:string;
+    name: string;
     description: string;
     anatomicalStructureId: string[];
     anatomicalStructureName: string[];
