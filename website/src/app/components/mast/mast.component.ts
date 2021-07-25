@@ -8,5 +8,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./mast.component.css']
 })
 export class MastComponent {
+
   constructor(public router: Router) { }
 }

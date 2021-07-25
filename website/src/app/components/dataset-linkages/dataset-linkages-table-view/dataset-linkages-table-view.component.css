@@ -19,8 +19,3 @@ td {
 td:last-child {
     padding-right: 14px;
 }
-
-.loading {
-    color: #fff;
-    padding: 14px;
-}
