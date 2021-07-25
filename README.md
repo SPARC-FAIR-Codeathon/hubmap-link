@@ -112,6 +112,8 @@ The transpiled build artifacts are located in the `/api/dist/` directory. All fi
 * `/api/` - The API server to obscure api key and perform some datatype conversions
 * `/api/src/` - API server source code and assets
 * `/api/public/` - Publically exposed API server resources
+* `/api/public/scaffolds/` - SPARC Scaffolds converted to CCF-compatible formats
+* `/scaffold-to-csv/` - Documentation and raw files demonstrating how to convert SPARC Scaffolds to CCF-compatible formats
 * `/docs/` - Documentation resources
 
 ## Data sources
