@@ -23,7 +23,7 @@ This application enables visualization and reporting on the linkages between HuB
 
 This study of the interlinkages between HuBMAP and SPARC ontologies and data could be very valuable in longitudinal studies and to further the goals of both HuBMAP and SPARC in cross-consortium interoperability.
 
-See the [Project Description](docs/DESCRIPTION.md) and [Workflow Document](docs/WORKFLOW.pdf) for more background information and initial resources for development.
+See the [Project Description](docs/DESCRIPTION.md), [Workflow Document](docs/WORKFLOW.pdf), and [Project Presentation](docs/20210726_project_presentation.pdf) for more background information and initial resources for development.
 
 ## Tracking Development
 
