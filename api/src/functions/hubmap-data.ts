@@ -508,7 +508,7 @@ export class HuBMAPTissueBlock {
       anatomicalStructureName: data.ancestors.map((o: any)=>ORGAN_TYPES[o.organ]).filter((o: string)=>!!o),
       dataType: data.entity_type,
       publicationStatus: data.data_access_level,
-      externalLink: `${portalUrl}/browse/sample/${data.uuid}`,
+      externalLink: `${portalUrl}browse/sample/${data.uuid}`,
       groupName: data.group_name,
       consortium: 'HuBMAP'
     };
