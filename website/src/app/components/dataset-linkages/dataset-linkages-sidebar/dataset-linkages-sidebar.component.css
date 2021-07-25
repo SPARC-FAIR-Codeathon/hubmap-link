@@ -1,0 +1,27 @@
+.full-width{width:100%;}
+.right-divider{border-right: 1px solid #505050;}
+
+mat-list-option[aria-selected="true"] {
+    background: rgba(0, 139, 139, 0.7);
+}
+
+.color-green{color:green;}
+.color-maroon{color:rgb(156, 3, 3);}
+.bold{font-weight: bold;}
+
+.sidebar{ min-width: 205px;}
+.sidebar-card{
+    width: 98%;
+    background-color: #212121;
+    margin-top: 25px;
+    padding: 8px 5px 5px 5px;
+}
+.sidebar-table{ width: 100%; }
+.sidebar-table > tbody{font-size:12px;}
+.sidebar-table tr{
+    padding-right: 5px;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #fff;
+}

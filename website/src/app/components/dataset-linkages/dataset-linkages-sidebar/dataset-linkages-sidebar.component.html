@@ -1,0 +1,68 @@
+<div fxLayout="column" fxLayoutAlign="start center" class="sidebar" fxFlex>
+    <!--
+    <mat-form-field appearance="outline">
+        <mat-label>Organ</mat-label>
+        <mat-select [(ngModel)]="asctbCompareService.selectedOrganType" (ngModelChange)="asctbCompareService.loadOrganData()">
+            <mat-option *ngFor="let organ of asctbCompareService.organTypes" [value]="organ.id">{{organ.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    -->
+
+    <mat-selection-list 
+        [(ngModel)]="metaDataService.selectedViewType" 
+        [multiple]="false" 
+        class="full-width">
+
+
+        <mat-divider></mat-divider>
+        <mat-list-option [value]="'table'" selected>
+            <mat-icon matListIcon>view_list</mat-icon>
+            Table view
+        </mat-list-option>
+        <mat-divider></mat-divider>
+    </mat-selection-list>
+
+    <!-- Statistics card -->
+    <mat-card class="sidebar-card" fxLayout="column" fxLayoutAlign="start start">
+        <table class="sidebar-table">
+            <thead><tr><th colspan="2">Dataset statistics</th></tr></thead>
+            <tbody>
+            
+                <tr>
+                    <td class="border-bottom">Data status:</td>
+                    <td class="border-bottom">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="bold" [class]="{'color-green': metaDataService.dataLoadStatus === 'Ready', 'color-maroon': metaDataService.dataLoadStatus !== 'Ready'}">
+                                {{metaDataService.dataLoadStatus}}
+                            </span>
+                            <span fxFlex></span>
+                            <mat-spinner diameter="15" *ngIf="metaDataService.dataLoadStatus === 'Loading'"></mat-spinner>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Datasets:</td>
+                    <td>{{metaDataService.datasetCountSparc + metaDataService.datasetCountHubmap}}</td>
+                </tr>
+                <tr>
+                    <td>SPARC datasets:</td>
+                    <td>{{metaDataService.datasetCountSparc}}</td>
+                </tr>
+                <tr>
+                    <td>HuBMAP datasets:</td>
+                    <td>{{metaDataService.datasetCountHubmap}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </mat-card>
+    <!--
+    <mat-card class="sidebar-card" fxLayout="column" fxLayoutAlign="start start">
+        <app-color-legend></app-color-legend>
+    </mat-card>
+    -->
+</div>
+
+
+
+

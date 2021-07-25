@@ -68,9 +68,9 @@ export class AsctbCompareService {
   countHubmapASLinks:number = 0;
   countSharedASLinks:number = 0;
   countTotalCT:number = 0;
-  //countSparcCT:number = 0;
-  //countHubmapCT:number = 0;
-  //countSharedCT:number = 0;
+  countSparcCT:number = 0;
+  countHubmapCT:number = 0;
+  countSharedCT:number = 0;
   /*************************************************************************************
    * Data tree structure representing organ data from both sparc and hubmap.
    *************************************************************************************/
@@ -110,6 +110,7 @@ export class AsctbCompareService {
     this.mergedOrganData = null;
     this.synonymIdx = null;
     this.mergedOrganIdx = {};
+    this.mergedCellTypeIdx = {};
     this.countTotalAS = 0;
     this.countSparcAS = 0;
     this.countHubmapAS = 0;
@@ -118,9 +119,9 @@ export class AsctbCompareService {
     this.countHubmapASLinks = 0;
     this.countSharedASLinks = 0;
     this.countTotalCT = 0;
-    //this.countSparcCT = 0;
-    //this.countHubmapCT = 0;
-    //this.countSharedCT = 0;
+    this.countSparcCT = 0;
+    this.countHubmapCT = 0;
+    this.countSharedCT = 0;
 
 
     //Update the data loading status
@@ -223,7 +224,7 @@ export class AsctbCompareService {
       }
     });
 
-    //Some additional CT -> AS relationships get mapped by the node traversal query
+    //Some additional CT -> AS relationships get mapped by the AS neighbor query
     this.sparcRawOrganData.edges.filter(edge=>{
       return edge.sub.includes('CL:');
     }).forEach(edge => {
@@ -231,21 +232,13 @@ export class AsctbCompareService {
         const asNode = this.sparcRawOrganData.nodes.find(node=>node.id === edge.sub);
         this.mergedCellTypeIdx[edge.sub] = this.initializeMergedCellType(edge.sub, asNode.lbl, asNode.lbl);
       }
+
       if(!this.sparcCellTypeEdges[edge.obj]){
         this.sparcCellTypeEdges[edge.obj] = [this.mergedCellTypeIdx[edge.sub]];
       }else if(this.sparcCellTypeEdges[edge.obj].indexOf(this.mergedCellTypeIdx[edge.sub]) < 0){
         this.sparcCellTypeEdges[edge.obj].push(this.mergedCellTypeIdx[edge.sub]);
       }
     });
-
-    /*
-    console.log('raw ct');
-    console.dir(this.sparcRawUberonClData);
-    console.log('ct map by ctId');
-    console.dir(this.mergedCellTypeIdx);
-    console.log('ct[] map by asId');
-    console.dir(this.sparcCellTypeEdges);
-    */
 
     //Iterate over sparc organs and initialize merged organ objects
     Object.values(sparcOrganIdx).forEach((sparcOrgan: any)=>{
@@ -254,6 +247,7 @@ export class AsctbCompareService {
       if(this.sparcCellTypeEdges[sparcOrgan.id]){
         this.sparcCellTypeEdges[sparcOrgan.id].forEach(ct => {
           mergedOrgan.ctSparcChildren.add(ct);
+          ct.sparcResident = true; //Mark the cell type as belonging to the sparc set
         });
       }
       this.mergedOrganIdx[mergedOrgan.id] = mergedOrgan;
@@ -307,6 +301,7 @@ export class AsctbCompareService {
                 this.mergedCellTypeIdx[ctId] :
                 this.initializeMergedCellType(ctId, hubmapCt.name, hubmapCt.rfs_label);
                 this.mergedCellTypeIdx[ctId] = cellType;
+                cellType.hubmapResident = true;
                 mergedOrgan.ctHubmapChildren.add(cellType);
             });
           }
@@ -345,6 +340,11 @@ export class AsctbCompareService {
       this.countSparcASLinks += mergedOrgan.asSparcChildren.size;
       this.countHubmapASLinks += mergedOrgan.asHubmapChildren.size;
       this.countSharedASLinks += mergedOrgan.asSharedChildren.size;
+      this.countSparcCT = Object.values(this.mergedCellTypeIdx).filter((ct:CellType)=>ct.sparcResident).length;
+      this.countHubmapCT = Object.values(this.mergedCellTypeIdx).filter((ct:CellType)=>ct.hubmapResident).length;
+      this.countSharedCT = Object.values(this.mergedCellTypeIdx).filter((ct:CellType)=>ct.sparcResident && ct.hubmapResident).length;
+      this.countTotalCT = this.countSparcCT + this.countHubmapCT + this.countSharedCT;
+
     });
 
     /*************************************************************************************
@@ -357,8 +357,6 @@ export class AsctbCompareService {
     this.countSparcAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && !organ.hubmapResident).length;
     this.countHubmapAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => !organ.sparcResident && organ.hubmapResident).length;
     this.countSharedAS = Object.values(this.mergedOrganIdx).filter((organ:Organ) => organ.sparcResident && organ.hubmapResident).length;
-
-    this.countTotalCT = Object.keys(this.mergedCellTypeIdx).length;
 
   }
 
@@ -540,7 +538,9 @@ export class AsctbCompareService {
     return {
       id: id,
       name: name,
-      label: label
+      label: label, 
+      sparcResident:false, 
+      hubmapResident:false
     };
   }
 }

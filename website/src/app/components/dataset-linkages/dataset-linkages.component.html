@@ -1,17 +1,6 @@
-
-<div class="loading" *ngIf="metaDataService.datasetArr.length < 1">
-    Loading...
+<div fxLayout="row" fxLayoutAlign="start start">
+    <app-dataset-linkages-sidebar></app-dataset-linkages-sidebar>
+    <div fxFlex>
+        <app-dataset-linkages-table-view *ngIf="metaDataService.selectedViewType=='table'"></app-dataset-linkages-table-view>
+    </div>
 </div>
-<table *ngIf="metaDataService.datasetArr.length > 0">
-    <thead>
-        <tr><td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
-            <strong>{{col}}</strong>
-        </td></tr>
-    </thead><tbody>
-        <tr *ngFor="let row of metaDataService.datasetArr">
-            <td *ngFor="let col of getObjectKeys(metaDataService.datasetArr[0])">
-                {{row[col]}}
-            </td>
-        </tr>
-    </tbody>
-</table>
