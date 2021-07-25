@@ -14,8 +14,4 @@ export class DatasetLinkagesComponent implements OnInit {
   ngOnInit(): void {
     this.metaDataService.fetchMetadata();
   }
-
-  getObjectKeys(obj:any):string[]{
-    return Object.keys(obj);
-  }
 }

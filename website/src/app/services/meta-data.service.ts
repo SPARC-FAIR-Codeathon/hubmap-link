@@ -1,59 +1,64 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 import { Dataset } from '../interfaces/dataset';
 import { MetaDataAjaxService } from './ajax/meta-data-ajax.service';
 
+// Human-readable data status string
+export type MetadataLoadingStatus = 'Not ready' | 'Loading' | 'Ready' | 'Error';
+
 /*******************************************************************************************
  * @Author Samuel O'Blenes
  * @Date 7/23/21
- * This service maintains UI state, data, and associated business logic for the dataset 
+ * This service maintains UI state, data, and associated business logic for the dataset
  * comparison
  *******************************************************************************************/
 @Injectable({
   providedIn: 'root'
 })
 export class MetaDataService {
-  public datasetArr: Dataset[] = [];
+  // Currently loaded Datasets
+  datasetArr: Dataset[] = [];
 
-  constructor(private metaDataAjaxService: MetaDataAjaxService) { }
+  // View type currently selected by the user
+  selectedViewType: string;
 
-  //View type currently selected by the user
-  selectedViewType:string;
-  //Human-readable data status string ['Not ready'|'Loading'|'Ready']
-  dataLoadStatus = 'Not ready';
+  // Human-readable data status string
+  dataLoadStatus: MetadataLoadingStatus = 'Not ready';
 
-  //Dataset summary statistics
+  // Dataset summary statistics
   datasetCountSparc = 0;
   datasetCountHubmap = 0;
 
+  constructor(private metaDataAjaxService: MetaDataAjaxService) { }
+
   // Download the consortia's metadata
-  public fetchMetadata(): Observable<Dataset[]> {
-    //Reset the data references and stats
+  fetchMetadata(): void {
+    // Reset the data references and stats
     this.dataLoadStatus = 'Loading';
     this.datasetCountSparc = 0;
     this.datasetCountHubmap = 0;
-    
-    
-    //Fetch data
+
+    // Fetch data
     const datasets$ = forkJoin([
       this.metaDataAjaxService.fetchHubmapMetadata(),
       this.metaDataAjaxService.fetchSparcMetadata()
-    ]).pipe(
-      map(([ds1, ds2]) => ds1.concat(ds2)),
-      tap(datasets => this.datasetArr = datasets),
-      catchError((err) => { console.error(err); return [[] as Dataset[]]; })
-    )
-
-    datasets$.subscribe({error: console.error});
-    datasets$.subscribe(() => {
-      this.dataLoadStatus = 'Ready';
-      console.dir(this.datasetArr);
-      this.datasetCountSparc = this.datasetArr.filter((ds)=>ds.consortium==='SPARC').length;
-      this.datasetCountHubmap = this.datasetArr.filter((ds)=>ds.consortium==='HuBMAP').length;
+    ]).subscribe({
+      next: ([hubmap, sparc]) => {
+        this.setDatasets('Ready', hubmap, sparc);
+      },
+      error: (err) => {
+        // Set error state
+        this.setDatasets('Error');
+        console.error(err);
+      }
     });
+  }
 
-    return datasets$;
+  private setDatasets(status: MetadataLoadingStatus, hubmap: Dataset[] = [], sparc: Dataset[] = []): void {
+    this.dataLoadStatus = status;
+    this.datasetCountHubmap = hubmap.length;
+    this.datasetCountSparc = sparc.length;
+    this.datasetArr = sparc.concat(hubmap);
   }
 }

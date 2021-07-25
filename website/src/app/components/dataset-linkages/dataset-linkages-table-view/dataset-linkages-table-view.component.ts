@@ -13,4 +13,7 @@ export class DatasetLinkagesTableViewComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getObjectKeys(obj:any):string[]{
+    return Object.keys(obj);
+  }
 }
