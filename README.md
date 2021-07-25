@@ -76,7 +76,7 @@ npm ci
 npm start
 ```
 
-The local Webapp will be running at <http://localhost:4200> and will connect to the local API server.
+The local webapp will be running at <http://localhost:4200> and will connect to the local API server.
 
 ### Building, Development, and Deployment
 
@@ -105,7 +105,7 @@ information on how to install, build, develop, and deploy the projects.
 
 | Data Type | Source | Method |
 | ----------- | ----------- | ----------- |
-| HuBMAP ontology concepts | HuBMAP CCF Reporter [Ontology API](https://portal.hubmapconsortium.org/docs/apis) | The ontology API references production versions of the HuBMAP ASCT+B tables where concepts are curated |
+| HuBMAP ontology concepts | CCF ASCT+B Reporter [ASCT+B API](https://github.com/hubmapconsortium/ccf-asct-reporter#asctb-api) | The API references production versions of the HuBMAP CCF ASCT+B tables where concepts are curated |
 | SPARC AS ontology concepts | FDI Lab [SciCrunch/SciGraph API](https://scicrunch.org/) | Organ anatomical structure concept datasets are extracted via neighbor search referencing inbound [PART_OF](http://www.ontobee.org/ontology/RO?iri=http://purl.obolibrary.org/obo/BFO_0000050) predicate up to 10 degrees |
 | SPARC CT ontology concepts | FDI Lab [SciCrunch/SciGraph API](https://scicrunch.org/) | Cell Type concepts are extracted via cypher query on UBERON-to-Cell Ontology single-hop linkages across all predicates |
 | HuBMAP dataset metadata | HuBMAP [Elastic Search API](https://smart-api.info/ui/7aaf02b838022d564da776b03f357158) | Dataset metadata is ingested directly from the endpoint |
