@@ -117,6 +117,9 @@ HuBMAP and SPARC concepts are merged principally based on shared ontology IDs. I
 
 ![alt text](./docs/HuBMAP_merge_workflow.png)
 
+## SPARC Scaffold to HuBMAP CCF Reference Organ Conversion
+
+For detailed instructions on how to convert a scaffold to be CCF-compatible, check out the [scaffold-to-ccf](scaffold-to-ccf/README.md) directory.
 
 ## Links and acknowledgements
 
