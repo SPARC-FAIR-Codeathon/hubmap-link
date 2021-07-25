@@ -5,19 +5,21 @@
         <div>
             <button mat-raised-button class="margin-left-100" [ngClass]="{'selected': router.url === '/asctb-compare' || router.url === '/'}" routerLink="asctb-compare">
                 <mat-icon>collections_bookmark</mat-icon>
-                Partonomy Comparison
+                Ontology Comparison
             </button>
             <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/dataset-linkage'}" routerLink="dataset-linkage">
                 <mat-icon>table_view</mat-icon>
-                Dataset Linkage
+                Dataset Comparison
             </button>
-            <a mat-raised-button class="margin-left-15" href="assets/ccf-eui.html" rel="noreferrer noopener" target="_blank">
-              <mat-icon>preview</mat-icon>
-              View Datasets in EUI
+            <a mat-raised-button class="margin-left-15" href="assets/ccf-eui.html" rel="noreferrer noopener" target="_blank"
+              matTooltip="View HuBMAP &amp; SPARC Datasets in the HuBMAP CCF Exploration User Interface (EUI)">
+                <mat-icon>preview</mat-icon>
+                View Datasets
             </a>
-            <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate">
+            <button mat-raised-button class="margin-left-15" [ngClass]="{'selected': router.url === '/asctb-generate'}" routerLink="asctb-generate"
+              matTooltip="Export SPARC Ontologies to the ASCT+B Reporter CSV format">
                 <mat-icon>file_download</mat-icon>
-                ASCT+B Table Export
+                Export SPARC Ontologies
             </button>
         </div>
 
