@@ -36,6 +36,7 @@ This application is built automatically using [GitHub Actions](https://github.co
 ## Installation
 
 This application consists of two parts, a webapp and an API server. The webapp is dependent on the API server for data transformation and to obscure the SciCrunch API key.
+
 To get started locally, follow these instructions:
 
 1. If you haven't done it already, [make a fork of this repo](https://github.com/SPARC-FAIR-Codeathon/hubmap-link/fork).
@@ -45,58 +46,42 @@ To get started locally, follow these instructions:
 1. Install the Angular CLI \
     `npm install -g @angular/cli`
 
-## Building and Installing the Webapp
+### Quick Start
 
-For building and installing, the following instructions assume you have changed directories to the website dir (`cd website`).
+To quickly get a local installation running, this requires running two terminals.
 
-### Initial Webapp Setup
+In the first, run:
 
-Run `npm ci` to install the JavaScript dependencies into `node_modules`.
+```bash
+cd api
+npm ci
+npm run build-ts
 
-### Development Webapp Server
+# Uncomment if on a linux or mac-based OS:  
+# export SCICRUNCH_API_KEY='APIKEYXXXX'
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Uncomment if on a Windows-based OS:  
+# set SCICRUNCH_API_KEY=APIKEYXXXX
 
-### Build Webapp
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-Additional options may be configured to meet the objectives of your build. More information may be found at the following reference: https://angular.io/cli/build.
-
-### Webapp Deployment
-
-The transpiled build artifacts are located in the `/website/dist/` directory. All files in the build directory should be deployed to the root directory of a static web server such as nginx or apache2. The CI/CD workflow described above places these build artifacts in the `gh-pages` branch to be automatically served by GitHub Pages.
-
-## Building and Installing the API server
-
-The following instructions assume you have changed directories to the API server home dir (`cd api`).
-
-### Initial API Server Setup
-
-Run `npm ci` to install the JavaScript dependencies into `node_modules`.
-
-The API server requires a SciCrunch API key to access SPARC data. After you have created a User identity, a key can be downloaded for free on the [SciCrunch website](https://scicrunch.org/).
-
-### Development API Server
-
-If on a linux-based OS:  
-```
-> export SCICRUNCH_API_KEY='APIKEYXXXX'
-```
-If on a Windows-based OS:  
-```
-> set SCICRUNCH_API_KEY=APIKEYXXXX
+npm start
 ```
 
-Run `npm start` for a dev server. Alternatively, you can run `npm watch-ts` and `npm watch-node` in separate terminals to have automatic rebuilding/serving of code while modifying API code. Navigate to `http://localhost:5000/` to verify the API server is running.
+The local API server will be running at <http://localhost:5000>.
 
-### Build API server
+In the second, run:
 
-Run `npm run build-ts` to build the API server code. The build artifacts will be stored in the `dist/` directory.
+```bash
+cd website
+npm ci
+npm start
+```
 
-### API server Deployment
+The local Webapp will be running at <http://localhost:4200> and will connect to the local API server.
 
-The transpiled build artifacts are located in the `/api/dist/` directory. All files in the build directory should be deployed to a service which can host Node.js applications. Run `node dist/index.js` on the instance to start the API server. The CI/CD workflow described above places these build artifacts in the Heroku infrastructure to automatically be run from <https://hubmap-link-api.herokuapp.com>.
+### Building, Development, and Deployment
+
+See the [api](api/README.md) and [website](website/README.md) directories for detailed
+information on how to install, build, develop, and deploy the projects.
 
 ## Project structure
 
