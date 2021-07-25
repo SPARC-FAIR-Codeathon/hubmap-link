@@ -27,7 +27,7 @@ See the [Project Description](docs/DESCRIPTION.md) and [Workflow Document](docs/
 
 ## Tracking Development
 
-Development is tracked on the [Sprint Backlog](https://github.com/SPARC-FAIR-Codeathon/hubmap-link/projects/1).
+Development is tracked on the [Sprint Backlog](https://github.com/SPARC-FAIR-Codeathon/hubmap-link/projects/1). A [CHANGELOG](CHANGELOG.md) details the new developments with each release.
 
 ## Continuous Integration / Continuous Deployment (CI/CD)
 
