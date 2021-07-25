@@ -5,3 +5,8 @@ table, th, td {
 th {background-color: #aaa}
 tr:nth-child(even) {background-color: #c2c2c2;}
 tr:nth-child(odd) {background-color: #fff;}
+
+.loading {
+  color: #fff;
+  padding: 14px;
+}

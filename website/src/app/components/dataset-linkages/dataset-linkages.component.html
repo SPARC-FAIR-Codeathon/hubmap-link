@@ -1,6 +1,6 @@
 
-<div *ngIf="metaDataService.datasetArr.length < 1">
-    Please wait...
+<div class="loading" *ngIf="metaDataService.datasetArr.length < 1">
+    Loading...
 </div>
 <table *ngIf="metaDataService.datasetArr.length > 0">
     <thead>
