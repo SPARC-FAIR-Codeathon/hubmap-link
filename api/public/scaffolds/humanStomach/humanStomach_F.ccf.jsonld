@@ -18,7 +18,7 @@
   "object": {
     "@id": "http://purl.org/ccf/latest/ccf.owl#SPARCFStomachObj",
     "@type": "SpatialObjectReference",
-    "file": "http://localhost:5000/scaffolds/humanStomach/humanStomach_F.glb",
+    "file": "https://hubmap-link-api.herokuapp.com/scaffolds/humanStomach/humanStomach_F.glb",
     "file_format": "model/gltf-binary",
     "placement": {
       "@id": "http://purl.org/ccf/latest/ccf.owl#SPARCFStomachPlacement",
