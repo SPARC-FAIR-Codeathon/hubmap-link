@@ -7,6 +7,8 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/SPARC-FAIR-Codeathon/hubmap-link.svg)](https://github.com/SPARC-FAIR-Codeathon/hubmap-link/commits/main)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
+[![Screenshot](docs/screenshot.png)](https://sparc-fair-codeathon.github.io/hubmap-link/)
+
 ## Product demo
 
 The latest build of this product is at <https://sparc-fair-codeathon.github.io/hubmap-link/>.
