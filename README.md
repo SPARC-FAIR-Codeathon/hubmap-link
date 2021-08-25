@@ -13,6 +13,12 @@
 
 The latest build of this product is at <https://sparc-fair-codeathon.github.io/hubmap-link/>.
 
+## 2-minute demo
+
+https://user-images.githubusercontent.com/34098595/130709306-b49f8b8e-2644-45bb-a344-fe7c9ac2d706.mp4
+
+[Presentation (PDF)](docs/20210726_project_presentation.pdf)
+
 ## Project Goals
 
 This application enables visualization and reporting on the linkages between HuBMAP and SPARC. It performs the following functions:
