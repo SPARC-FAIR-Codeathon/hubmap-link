@@ -33,17 +33,19 @@ export async function fetchElasticSearch(query: any, limit: number, apiKey: stri
   }
 }
 
-export async function fetchHuBMAPElasticSearch(query: any, limit: number): Promise<ESResponse> {
+export async function fetchHuBMAPElasticSearch(query: any, limit: number, token?: string): Promise<ESResponse> {
   const uri = 'https://search.api.hubmapconsortium.org/entities/search';
   query = { ...query, version: true, size: limit };
 
   const response = await axios.post<ESResponse>(uri, query, {
     responseType: 'json',
-    headers: {
+    headers: Object.assign({
       'Accept': 'application/json',
       'Content-type': 'application/json',
-      'Accept-Encoding': 'gzip, deflate, br'
-    },
+      'Accept-Encoding': 'gzip, deflate, br',
+    }, token ? {
+      Authorization: `Bearer ${ token }`
+    } : {}),
     decompress: true
   });
 

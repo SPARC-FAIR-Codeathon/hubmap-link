@@ -2,7 +2,7 @@ import { fetchHuBMAPElasticSearch } from './fetch-elastic-search';
 import { hubmapResponseAsJsonLd } from './hubmap-data';
 
 
-export async function fetchHuBMAPData(format: string): Promise<any> {
+export async function fetchHuBMAPData(format: string, token?: string): Promise<any> {
   const debug = format && format.includes('debug');
   const esData = await fetchHuBMAPElasticSearch({
     _source: {
@@ -16,7 +16,7 @@ export async function fetchHuBMAPData(format: string): Promise<any> {
     docvalue_fields: [],
     post_filter: debug ? { term: { 'entity_type.keyword': 'Sample' } } : undefined,
     query: !debug ? { exists: { field: 'rui_location' } } : undefined
-  }, 10000);
+  }, 10000, token);
   switch (format) {
     case 'json-metadata':
     case 'json-metadata-debug':
