@@ -16,7 +16,7 @@ export async function fetchHuBMAPData(format: string, token?: string): Promise<a
     docvalue_fields: [],
     post_filter: debug ? { term: { 'entity_type.keyword': 'Sample' } } : undefined,
     query: !debug ? { exists: { field: 'rui_location' } } : undefined
-  }, 10000, token);
+  }, 40, token);
   switch (format) {
     case 'json-metadata':
     case 'json-metadata-debug':
