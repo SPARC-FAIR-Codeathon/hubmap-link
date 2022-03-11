@@ -7,8 +7,12 @@ export function setupHuBMAPDatasetsRoute(app: Express): void {
     const format = req.query.format as string;
     const token = req.query.token as string | undefined;
     try {
-      const response = await fetchHuBMAPData(format, token);
-      res.status(200).send(response);
+      if (format === 'jsonld') {
+        res.redirect(301, 'https://ccf-api.hubmapconsortium.org/v1/hubmap/rui_locations.jsonld');
+      } else {
+        const response = await fetchHuBMAPData(format, token);  
+        res.status(200).send(response);
+      }
     } catch (err) {
       console.log(err);
       res.statusMessage = err;
