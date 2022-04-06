@@ -54,9 +54,9 @@
     "z_rotation": 0,
     "rotation_order": "XYZ",
     "rotation_units": "degree",
-    "x_translation": 506.807,
+    "x_translation": 486.807,
     "y_translation": 1240.282,
-    "z_translation": 164.553,
+    "z_translation": -224.553,
     "translation_units": "millimeter"
   },
   "reference_organ": "http://purl.org/ccf/latest/ccf.owl#SPARCFHeart",

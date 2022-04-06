@@ -34,8 +34,8 @@
       "z_rotation": 0,
       "rotation_units": "degree",
       "x_translation": 0.053458,
-      "y_translation": 0.56196,
-      "z_translation": 0.086354,
+      "y_translation": 0.086354,
+      "z_translation": 0.56196,
       "translation_units": "millimeter"
     }
   },
@@ -54,9 +54,9 @@
 		"z_rotation": 0,
 		"rotation_order": "XYZ",
 		"rotation_units": "degree",
-		"x_translation": 579.065,
-		"y_translation": 1368.455,
-		"z_translation": 155.739,
+		"x_translation": 505.065,
+		"y_translation": 1448.455,
+		"z_translation": -275.739,
 		"translation_units": "millimeter"
   },
   "reference_organ": "http://purl.org/ccf/latest/ccf.owl#SPARCMHeart",
