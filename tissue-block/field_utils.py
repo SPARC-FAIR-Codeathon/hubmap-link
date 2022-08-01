@@ -47,6 +47,7 @@ def create_field_euler_angles_rotation_matrix(fieldmodule: Fieldmodule, euler_an
 def create_fields_transformations(coordinates: Field, rotation_angles=None, scale_value=1.0,
                                   translation_offsets=None, translation_scale_factor=1.0):
     """
+    From ScaffoldFitter library (https://github.com/ABI-Software/scaffoldfitter) fitterstepalign.py
     Create constant fields for rotation, scale and translation containing the supplied
     values, plus the transformed coordinates applying them in the supplied order.
     :param coordinates: The coordinate field to scale, 3 components.
@@ -63,7 +64,7 @@ def create_fields_transformations(coordinates: Field, rotation_angles=None, scal
     if translation_offsets is None:
         translation_offsets = [0.0, 0.0, 0.0]
     components_count = coordinates.getNumberOfComponents()
-    assert (components_count == 3) and (len(rotation_angles) == components_count) and isinstance(scale_value, float) \
+    assert (components_count == 3) and (len(rotation_angles) == components_count) \
            and (len(translation_offsets) == components_count), "createFieldsTransformations.  Invalid arguments"
     fieldmodule = coordinates.getFieldmodule()
     with ChangeManager(fieldmodule):
