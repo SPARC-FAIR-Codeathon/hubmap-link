@@ -11,8 +11,9 @@ class RuiLocations:
 
         self._graph = self._content['@graph']
 
-    def get_rui_data_by_index(self, index: int) -> Dict:
-        donor = self._graph[index]
+    def get_rui_data_by_index(self, block_id: str) -> Dict:
+        donor_index = next((index for (index, d) in enumerate(self._graph) if d['@id'] == block_id), None)
+        donor = self._graph[donor_index]
         rui_location = donor['samples'][0]['rui_location']
         transformation_field = rui_location['placement']
 
