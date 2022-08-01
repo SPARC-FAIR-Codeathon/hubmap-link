@@ -1,0 +1,32 @@
+{
+  "humanHeart_M": {
+    "transformation": {
+      "Rotation": [
+        3.907,
+        0.2713,
+        0.9516
+      ],
+      "Scale": 0.001012,
+      "Translation": [
+        0.009526,
+        -0.03688,
+        0.4937
+      ]
+    }
+  },
+  "humanHeart_F": {
+    "transformation": {
+      "Rotation": [
+        3.963,
+        0.6692,
+        0.9211
+      ],
+      "Scale": 0.001143,
+      "Translation": [
+        0.02443,
+        -0.006716,
+        0.4332
+      ]
+    }
+  }
+}
