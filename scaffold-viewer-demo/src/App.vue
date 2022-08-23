@@ -60,23 +60,23 @@ export default {
       displayUI: true,
       displayMarkers: false,
       viewer_1 : {
-        url: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/heart_m_metadata.json",
+        url: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/male/heart_m_metadata.json",
         format: "metadata",
       },
       viewer_2 : {
-        url: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/donor_with_view.json",
+        url: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/male/donor_with_view.json",
         format: "metadata",
       },
-      gltfLink1: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/VH_M_Heart_only.glb",
+      gltfLink1: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/male/VH_M_Heart_only.glb",
       viewer_3 : {
-        url: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/female/heart_f_metadata.json",
+        url: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/female/heart_f_metadata.json",
         format: "metadata",
       },
       viewer_4 : {
-        url: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/female/donor_with_view.json",
+        url: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/female/donor_with_view.json",
         format: "metadata",
       },
-      gltfLink2: "https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/female/VH_F_Heart_only.glb",
+      gltfLink2: "https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/female/VH_F_Heart_only.glb",
     };
   },
   methods: {
@@ -101,7 +101,7 @@ export default {
         )
         //Load the view file containing the same viewing settings as the one on the left panel
         //This shoudl change if the mesh on the left (metadata) has changed.
-        this.$refs.scaffold2.$module.scene.loadViewURL("https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/heart_m_view.json");
+        this.$refs.scaffold2.$module.scene.loadViewURL("https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/male/heart_m_view.json");
         this.$refs.scaffold2.$module.unsetFinishDownloadCallback();
       }
     },
@@ -128,7 +128,7 @@ export default {
 
         //Load the view file containing the same viewing settings as the one on the left panel
         //This shoudl change if the mesh on the left (metadata) has changed.
-        this.$refs.scaffold4.$module.scene.loadViewURL("https://mapcore-bucket1.s3.us-west-2.amazonaws.com/hubmaps_heart/female/heart_f_view.json");
+        this.$refs.scaffold4.$module.scene.loadViewURL("https://hubmapconsortium.github.io/ccf-sparc-pilot/data/ccf-in-scaffolds/female/heart_f_view.json");
         this.$refs.scaffold4.$module.unsetFinishDownloadCallback();
       }
     },
