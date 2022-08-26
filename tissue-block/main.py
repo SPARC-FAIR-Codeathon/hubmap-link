@@ -148,16 +148,6 @@ def __load_entity(input_file: str, sex: str) -> None:
                                                initial_placement['z_rotation']]
 
 
-def __load_organ_scaffold(input_file: str) -> None:
-    context = Context("HuBMAP-SPARC Scaffold")
-    __settings__['organ_region'] = context.getDefaultRegion()
-    result = __settings__['organ_region'].readFile(input_file)
-    assert result == RESULT_OK, f'Could not load scaffold file {input_file}.'
-    __settings__['organ_fieldmodule'] = __settings__['organ_region'].getFieldmodule()
-    __settings__['organ_coordinates'] = __settings__['organ_fieldmodule'].findFieldByName('coordinates')
-    __settings__['output_dir'] = os.path.dirname(input_file)
-
-
 def __load_rui(input_file: str, block_id: str) -> None:
     rui = RuiLocations(filename=input_file)
     placement = rui.get_rui_data_by_index(block_id=block_id)
