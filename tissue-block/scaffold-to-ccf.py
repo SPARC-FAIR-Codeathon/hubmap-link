@@ -86,9 +86,9 @@ def __find_transformation() -> Dict:
     target_nodeset = __settings__['block_nodeset']
     target_cache = __settings__['block_cache']
     target_parms = extract_nodal_parameters(target_block_coordinates, target_nodeset, target_cache)
-    __rui__['x_translation'] = target_parms[0][0]
-    __rui__['y_translation'] = target_parms[0][1]
-    __rui__['z_translation'] = target_parms[0][2]
+    __rui__['x_translation'] = target_parms[0][0] * -1
+    __rui__['y_translation'] = target_parms[0][1] * -1
+    __rui__['z_translation'] = target_parms[0][2] * -1
     reference_params = np.asarray(reference_params) / __unit_scale__
     target_parms = np.asarray(target_parms) / __unit_scale__
 
