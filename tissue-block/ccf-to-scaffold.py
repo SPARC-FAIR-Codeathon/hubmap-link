@@ -8,9 +8,9 @@ from math import pi
 
 from scipy.spatial.transform import Rotation
 
-from src.rui_locations import RuiLocations
-from src.block import TissueBlock
-from src.field_utils import create_fields_transformations
+from .rui_locations import RuiLocations
+from .block import TissueBlock
+from .field_utils import create_fields_transformations
 
 from opencmiss.zinc.context import Context
 from opencmiss.zinc.result import RESULT_OK
@@ -222,7 +222,7 @@ def main():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Transform HubMap extracted data files to ex format.")
+    parser = argparse.ArgumentParser(description="Transform HubMAP extracted data files to ex format.")
     parser.add_argument("--organ-scaffold", help="Location of the input organ scaffold EX file.")
     parser.add_argument("--config", help="Location of the transformation config file.")
     parser.add_argument("--sex", help="Female or Male."
