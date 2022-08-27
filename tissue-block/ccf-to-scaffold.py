@@ -222,7 +222,7 @@ def main():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Transform HubMap extracted data files to ex format.")
+    parser = argparse.ArgumentParser(description="Transform HubMAP extracted data files to ex format.")
     parser.add_argument("--organ-scaffold", help="Location of the input organ scaffold EX file.")
     parser.add_argument("--config", help="Location of the transformation config file.")
     parser.add_argument("--sex", help="Female or Male."
