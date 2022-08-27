@@ -1,5 +1,8 @@
+from typing import List
+
 from opencmiss.zinc.fieldmodule import Fieldmodule
 from opencmiss.zinc.field import Field
+from opencmiss.zinc.node import Node
 from opencmiss.utils.zinc.general import ChangeManager
 
 
@@ -100,3 +103,20 @@ def evaluate_field_mesh_integral(field: Field, coordinates: Field, mesh, number_
         del integral
         del fieldcache
     return value
+
+
+def extract_nodal_parameters(coordinates: Field, nodes, cache) -> List:
+    node_iter = nodes.createNodeiterator()
+    node = node_iter.next()
+    values_to_return = list()
+    while node.isValid():
+        cache.setNode(node)
+        result, values = coordinates.castFiniteElement().getNodeParameters(cache,
+                                                                           -1,
+                                                                           Node.VALUE_LABEL_VALUE,
+                                                                           1,
+                                                                           3)
+        values_to_return.append(values)
+        node = node_iter.next()
+
+    return values_to_return
