@@ -8,9 +8,9 @@ from math import pi
 
 from scipy.spatial.transform import Rotation
 
-from src.rui_locations import RuiLocations
-from src.block import TissueBlock
-from src.field_utils import create_fields_transformations
+from .rui_locations import RuiLocations
+from .block import TissueBlock
+from .field_utils import create_fields_transformations
 
 from opencmiss.zinc.context import Context
 from opencmiss.zinc.result import RESULT_OK
