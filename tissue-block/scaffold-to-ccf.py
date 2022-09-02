@@ -2,7 +2,10 @@ import os
 import json
 import argparse
 
-from typing import Dict
+from typing import Dict, List
+
+import uuid
+import time
 
 from math import pi
 
@@ -17,6 +20,7 @@ from opencmiss.utils.zinc.general import ChangeManager
 from .field_utils import evaluate_field_mesh_integral, create_fields_transformations, extract_nodal_parameters
 from .transformation import find_transformation
 from .block import TissueBlock
+from .rui_template import rui_template
 
 __unit_scale__ = 0.001
 __rad2pi = 180. / pi
@@ -29,6 +33,10 @@ __rui__ = dict()
 class ProgramArguments(object):
     def __init__(self):
         self.block_ex = None
+        self.id = None
+        self.description = None
+        self.creator = None
+        self.sex = None
         self.output = None
 
 
@@ -111,9 +119,42 @@ def __find_transformation() -> Dict:
     return transformation
 
 
-def __write_rui_json(output_path: str) -> None:
+def __write_rui_json(content: List, output_path: str) -> None:
+    rui_template['@graph'][0]['@id'] = content[0]
+    rui_template['@graph'][0]['description'] = content[1]
+    rui_template['@graph'][0]['provider_uuid'] = str(uuid.uuid4())
+    rui_template['@graph'][0]['samples'][0]['@id'] = content[0]
+    rui_template['@graph'][0]['samples'][0]['description'] = content[1]
+    rui_template['@graph'][0]['samples'][0]['rui_location']['@id'] = content[0]
+    rui_template['@graph'][0]['samples'][0]['rui_location']['creator'] = content[2]
+    rui_template['@graph'][0]['samples'][0]['rui_location']['creation_date'] = time.strftime('%Y-%m-%d')
+
+    rui_template['@graph'][0]['samples'][0]['rui_location']['x_dimension'] = __rui__['x_dimension']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['y_dimension'] = __rui__['y_dimension']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['z_dimension'] = __rui__['z_dimension']
+
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['@id'] = content[0]
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['target'] = content[3]
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['placement_date'] = time.strftime('%Y-%m-%d')
+
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['x_scaling'] = __rui__['x_scaling']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['y_scaling'] = __rui__['y_scaling']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['z_scaling'] = __rui__['z_scaling']
+
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['x_rotation'] = __rui__['x_rotation']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['y_rotation'] = __rui__['y_rotation']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['z_rotation'] = __rui__['z_rotation']
+
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['x_translation'] = __rui__['x_translation']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['y_translation'] = __rui__['y_translation']
+    rui_template['@graph'][0]['samples'][0]['rui_location']['placement']['z_translation'] = __rui__['z_translation']
+
     with open(output_path, 'w') as rui:
-        json.dump(__rui__, rui)
+        json.dump(rui_template, rui,
+                  sort_keys=True,
+                  indent=4,
+                  separators=(',', ': ')
+                  )
 
 
 def main():
@@ -128,12 +169,28 @@ def main():
         if not os.path.exists(args.output):
             os.makedirs(args.output)
 
-        __write_rui_json(os.path.join(args.output, json_filename + '.json'))
+        id = args.id
+        description = args.description
+        creator = args.creator
+        sex = args.sex
+
+        if args.sex == 'M' or args.sex == 'Male':
+            target = "http://purl.org/ccf/latest/ccf.owl#VHMHeart"
+        elif args.sex == 'F' or args.sex == 'Female':
+            target = "http://purl.org/ccf/latest/ccf.owl#VHFHeart"
+        else:
+            raise ValueError(f'Invalid value for sex {sex}')
+
+        __write_rui_json([id, description, creator, target], os.path.join(args.output, json_filename + '.json'))
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Transform SPARC EX tissue block to HuBMAP CCF RUI.")
     parser.add_argument("--block_ex", help="Location of the input tissue block EX file.")
+    parser.add_argument("--id", help="ID of tissue block.")
+    parser.add_argument("--description", help="Description about the tissue block registration.")
+    parser.add_argument("--creator", help="Name of the registration creator.")
+    parser.add_argument("--sex", help="Sex of the sample.")
     parser.add_argument("--output", help="Location of the output JSON file.")
 
     program_arguments = ProgramArguments()
