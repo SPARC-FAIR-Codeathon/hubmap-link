@@ -48,11 +48,27 @@ file format.
 ### Map from SPARC Scaffold to HuBMAP RUI:
 
 ```
-> python scaffold-to-ccf.py --block_ex <path/to/tissue_block.exf> --output <path/to/output/dir>
+> python scaffold-to-ccf.py --block_ex <path/to/tissue_block.exf> --output <path/to/output/dir> --id <id> --description <description> --creator <name> --sex <F/M>
 ```
 
 This module takes a tissue block in OpenCMISS-ZINC EX format as input and outputs a JSON file containing the
 transformation data required to place the block into HuBMAP CCF.
 
-*** Note that the output JSON file contains only the transformation data and does not include any other entries of the
-RUI file. There needs to be further discussion as how to incorporate this data into a proper RUI JSON file.
+*** Note that the output JSON file contains only the transformation data. Other entries in the file are 'dummy' data 
+for the time being.
+
+
+### Export to JSON web components for web visualization:
+
+Registered tissue blocks from CCF to SPARC Scaffold can be exported to web-friendly files for hosting them on a web 
+portal. The original files are in the proprietary format of OpenCMISS-ZINC EX file specifications. The open-source
+application of [CMGUI](https://physiomeproject.org/software/opencmiss/cmgui/download) allows for exporting the files
+into JSON files containing data of primitives readable using ThreeJS for web browser rendering of 3D surfaces.
+
+To do this, all you need to do is to download CMGUI, run the application,
+read the EX files (see CMGUI documentation for further details) and write the outputs by entering the following scripts
+into the CMGUI script field:
+
+```console
+gfx export threejs <file_prefix NAME> <scene PATH_TO_SCENE[/]>
+```
